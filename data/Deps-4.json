@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Deps",
+  "risk": "2",
+  "title": "Auction can never be paused",
+  "issueId": 4,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/4"
+}
