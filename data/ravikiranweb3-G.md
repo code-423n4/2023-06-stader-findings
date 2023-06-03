@@ -1,5 +1,7 @@
 a) There are a number of occasions where the variables are read into storage even in the cases where the data is never modified. In such cases, it is more gas efficient to read them into Memory for temporary computation.
 
+This is one such example, but there are many such occassion where storage could be replaced with memory for optimization. Every time, the data is read only and there is no update on the state variables, it is better to read them in memory.
+
 example, in the below function, 
 -> PoolThresholdInfo storage poolThreshold = poolThresholdbyPoolId[_poolId];
 
