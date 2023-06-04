@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "kutugu",
+  "risk": "2",
+  "title": "latestRoundData not check result accuracy and freshness",
+  "issueId": 14,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/14"
+}
