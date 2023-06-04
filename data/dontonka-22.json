@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "dontonka",
+  "risk": "2",
+  "title": "OperatorRewardsCollector::depositFor could lost user fund forever",
+  "issueId": 22,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/22"
+}
