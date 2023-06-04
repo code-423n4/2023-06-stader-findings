@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Madalad",
+  "risk": "2",
+  "title": "Chainlink aggregators return the incorrect price if it drops below `minPrice`",
+  "issueId": 16,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/16"
+}
