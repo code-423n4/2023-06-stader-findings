@@ -74,3 +74,20 @@ function onlyValidKeys(
         return IStaderPoolBase(poolAddressById[_poolId]).getSocializingPoolAddress();
     }
 ```
+
+6. extractNonBidSD should use safeTransfer instead of transfer 
+```solidity
+    function extractNonBidSD(uint256 lotId) external override {
+        LotItem storage lotItem = lots[lotId];
+        if (block.number <= lotItem.endBlock) revert AuctionNotEnded();
+        if (lotItem.highestBidAmount > 0) revert LotWasAuctioned();
+        if (lotItem.sdAmount == 0) revert AlreadyClaimed();
+
+        uint256 _sdAmount = lotItem.sdAmount;
+        lotItem.sdAmount = 0;
+        if (!IERC20(staderConfig.getStaderToken()).transfer(staderConfig.getStaderTreasury(), _sdAmount)) {
+            revert SDTransferFailed();
+        }
+        emit UnsuccessfulSDAuctionExtracted(lotId, _sdAmount, staderConfig.getStaderTreasury());
+    }
+```
