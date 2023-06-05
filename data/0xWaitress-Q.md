@@ -111,3 +111,12 @@ function onlyValidKeys(
     // mapping of whitelisted permissioned node operator
     mapping(address => bool) public override permissionList;
 ```
+
+9. three variables in addValidatorKeys can be bundled into a struct
+```solidity
+function addValidatorKeys(
+        bytes[] calldata _pubkey,
+        bytes[] calldata _preDepositSignature,
+        bytes[] calldata _depositSignature
+    ) 
+```
