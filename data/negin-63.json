@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "negin",
+  "risk": "3",
+  "title": "Loss of funds for passing address zero as the input of the `depositFor ` function",
+  "issueId": 63,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/63"
+}
