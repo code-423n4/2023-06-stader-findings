@@ -34,3 +34,17 @@
         return IStaderPoolBase(poolAddressById[_poolId]).getSocializingPoolAddress();
     }
 ```
+
+2.calculateMEVTHeftPenality just need a length return from rate oracle
+```solidity
+    /// @inheritdoc IPenalty
+    function calculateMEVTheftPenalty(bytes32 _pubkeyRoot) public override returns (uint256) {
+        // Retrieve the epochs in which the validator violated the fee recipient change rule.
+        uint256[] memory violatedEpochs = IRatedV1(ratedOracleAddress).getViolationsForValidator(_pubkeyRoot);
+
+        // each strike attracts `mevTheftPenaltyPerStrike` penalty
+        return violatedEpochs.length * mevTheftPenaltyPerStrike;
+    }
+```
+## Recommendation
+add a function in rateOracle that only returns the length of the violatedEpochs.
