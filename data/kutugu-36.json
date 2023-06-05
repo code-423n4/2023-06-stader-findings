@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "kutugu",
+  "risk": "2",
+  "title": "StakePool deposit can be attacked by ERC4626 first deposit attack",
+  "issueId": 36,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/36"
+}
