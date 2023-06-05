@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "SovaSlava",
+  "risk": "2",
+  "title": "Contract StaderOracle dont have pause() and unpause() functions, but use whenNotPaused modifier",
+  "issueId": 55,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/55"
+}
