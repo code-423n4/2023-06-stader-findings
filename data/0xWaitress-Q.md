@@ -104,3 +104,10 @@ function onlyValidKeys(
         emit Claimed(operatorRewardsAddr, amount);
     }
 ```
+
+8. lack of function to remove node operator from permissionList on PermissionedNodeRegistry
+
+``solidity
+    // mapping of whitelisted permissioned node operator
+    mapping(address => bool) public override permissionList;
+```
