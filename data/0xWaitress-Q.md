@@ -91,3 +91,16 @@ function onlyValidKeys(
         emit UnsuccessfulSDAuctionExtracted(lotId, _sdAmount, staderConfig.getStaderTreasury());
     }
 ```
+
+7. OperatorRewardsController.claim of 0 should either be prohibited or short-circuited from sendValue
+```solidity
+    function claim() external whenNotPaused {
+        address operator = msg.sender;
+        uint256 amount = balances[operator];
+        balances[operator] -= amount;
+
+        address operatorRewardsAddr = UtilLib.getOperatorRewardAddress(msg.sender, staderConfig);
+        UtilLib.sendValue(operatorRewardsAddr, amount);
+        emit Claimed(operatorRewardsAddr, amount);
+    }
+```
