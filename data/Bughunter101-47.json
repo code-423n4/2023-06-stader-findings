@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Bughunter101",
+  "risk": "3",
+  "title": "`StaderOracle.disableERInspectionMode()` function exists authentication bypass",
+  "issueId": 47,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/47"
+}
