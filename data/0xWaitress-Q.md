@@ -112,11 +112,19 @@ function onlyValidKeys(
     mapping(address => bool) public override permissionList;
 ```
 
-9. three variables in addValidatorKeys can be bundled into a struct
+9. three variables in addValidatorKeys can be bundled into a struct 
 ```solidity
 function addValidatorKeys(
         bytes[] calldata _pubkey,
         bytes[] calldata _preDepositSignature,
         bytes[] calldata _depositSignature
     ) 
+```
+
+10. user can only specify a full ETH as expectedAmount, but sometimes they might want to specify a decimal amount but now is not working since minEThRequiredToFinalizeRequest is dividing by 10 ** 18
+```solidity
+            UserWithdrawInfo memory userWithdrawInfo = userWithdrawRequests[requestId];
+            uint256 requiredEth = userWithdrawInfo.ethExpected;
+            uint256 lockedEthX = userWithdrawInfo.ethXAmount;
+            uint256 minEThRequiredToFinalizeRequest = Math.min(requiredEth, (lockedEthX * exchangeRate) / DECIMALS);
 ```
