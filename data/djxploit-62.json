@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "djxploit",
+  "risk": "2",
+  "title": "Auction.sol can't be paused on emergency. This gives a false sense of security",
+  "issueId": 62,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/62"
+}
