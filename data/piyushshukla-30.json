@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "piyushshukla",
+  "risk": "3",
+  "title": "stakeUserETHToBeaconChain reverts due to infinite loop ",
+  "issueId": 30,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/30"
+}
