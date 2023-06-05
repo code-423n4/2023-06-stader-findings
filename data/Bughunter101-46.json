@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Bughunter101",
+  "risk": "3",
+  "title": "`StaderOracle.getReportableBlockFor()` rounding leads to zero, loss of precision",
+  "issueId": 46,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/46"
+}
