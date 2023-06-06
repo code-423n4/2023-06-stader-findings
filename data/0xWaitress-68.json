@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "0xWaitress",
+  "risk": "2",
+  "title": "a validator's SD collateral would be entirely slashed even if it's collateral is slightly less than the penalty",
+  "issueId": 68,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/68"
+}
