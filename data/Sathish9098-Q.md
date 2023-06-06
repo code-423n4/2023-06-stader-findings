@@ -1,4 +1,14 @@
+# LOW FINDINGS
 
+## [L-1] Initialize functions could be front run 
+
+```diff
+FILE: 2023-06-stader/contracts/Auction.sol
+
+29: function initialize(address _admin, address _staderConfig) external initializer {
+
+```
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#L29
 
 
 
