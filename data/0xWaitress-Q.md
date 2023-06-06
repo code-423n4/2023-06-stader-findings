@@ -140,3 +140,20 @@ function addValidatorKeys(
         IERC20(staderConfig.getStaderToken()).approve(auctionContract, type(uint256).max);
     }
 ```
+
+12. enableSafeMode and disableSafeMode in StaderOracle does not check if the safeMode is already enabled or disabled like all other functions
+
+```solidity
+    function enableSafeMode() external override {
+        UtilLib.onlyManagerRole(msg.sender, staderConfig);
+        safeMode = true;
+        emit SafeModeEnabled();
+    }
+
+    function disableSafeMode() external override onlyRole(DEFAULT_ADMIN_ROLE) {
+        safeMode = false;
+        emit SafeModeDisabled();
+    }
+```
+## Recommendation
+add a status check before setting the safeMode to the designed value.
