@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "0xWaitress",
+  "risk": "2",
+  "title": "There is an inherent risk for user to lose a max of 12ETH if a operator disappears and only get ejected with 16ETH",
+  "issueId": 69,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/69"
+}
