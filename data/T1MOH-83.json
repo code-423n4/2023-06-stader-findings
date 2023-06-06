@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "T1MOH",
+  "risk": "3",
+  "title": "`Auction#addBid()` does not extend auction endDate if bid submitted too close to the end",
+  "issueId": 83,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/83"
+}
