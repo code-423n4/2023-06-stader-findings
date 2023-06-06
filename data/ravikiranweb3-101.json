@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "ravikiranweb3",
+  "risk": "2",
+  "title": "Pool manager staking  of User ETH to BeaconChain on PermissionedPool could result in DoS",
+  "issueId": 101,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/101"
+}
