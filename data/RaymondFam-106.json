@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "RaymondFam",
+  "risk": "2",
+  "title": "Unrestricted Access to the createLot Function in the Auction Contract",
+  "issueId": 106,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/106"
+}
