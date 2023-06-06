@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "rvierdiiev",
+  "risk": "2",
+  "title": "ValidatorWithdrawalVault.distributeRewards can be called to make operator slashable",
+  "issueId": 86,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/86"
+}
