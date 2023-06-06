@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "rvierdiiev",
+  "risk": "2",
+  "title": "In case if permissioned operator has SD balance, then it will be slashed in case of penalty.",
+  "issueId": 81,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/81"
+}
