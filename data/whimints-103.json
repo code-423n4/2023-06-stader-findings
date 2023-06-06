@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "whimints",
+  "risk": "3",
+  "title": "Block stuffing attacks can delay oracle updates longer than they should",
+  "issueId": 103,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/103"
+}
