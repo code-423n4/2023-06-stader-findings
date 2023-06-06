@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "T1MOH",
+  "risk": "2",
+  "title": "Auctions fail to account for network and market conditions",
+  "issueId": 94,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/94"
+}
