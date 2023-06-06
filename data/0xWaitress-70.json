@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "0xWaitress",
+  "risk": "2",
+  "title": "no bidder has incentive to bid the Auction except doing last-minute MEV due to fixed endBlock",
+  "issueId": 70,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/70"
+}
