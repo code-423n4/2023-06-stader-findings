@@ -1,5 +1,19 @@
 # LOW FINDINGS
 
+##
+
+## [L-1] Unbounded loop
+
+``nextOperatorId`` the value is only incremented .
+
+PermissionlessNodeRegistry.allocateValidatorsAndUpdateOperatorId() will iterate all the OperatorId.
+
+Currently, ``nextOperatorId`` can grow indefinitely. E.g. there’s no maximum limit and there’s no functionality to remove assets
+
+If the value grows too large, calling PermissionlessNodeRegistry.allocateValidatorsAndUpdateOperatorId() might run out of gas and revert. Claiming and distributing rewards will result in a DOS condition.
+
+
+
 ## [L-1] Initialize functions could be front run 
 
 ```diff
@@ -9,6 +23,21 @@ FILE: 2023-06-stader/contracts/Auction.sol
 
 ```
 https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#L29
+
+##
+
+## [L-] Inconsistency between the comment and the actual value assigned
+
+ It appears that there is an inconsistency between the comment and the actual value assigned to the constant variable. The comment states that the value represents a 24-hour duration, but the assigned value of 7200 actually corresponds to a duration of 2 hours
+
+```diff
+FILE: Breadcrumbs2023-06-stader/contracts/Auction.sol
+
+- 22: uint256 public constant MIN_AUCTION_DURATION = 7200; // 24 hours
++ 22: uint256 public constant MIN_AUCTION_DURATION = 7200; // 2 hours
+```
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#LL22C5-L22C69
+
 
 
 
