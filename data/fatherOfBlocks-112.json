@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "fatherOfBlocks",
+  "risk": "2",
+  "title": "hardcoded variables not allowing to update price values",
+  "issueId": 112,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/112"
+}
