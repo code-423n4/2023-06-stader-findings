@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "ravikiranweb3",
+  "risk": "2",
+  "title": "Logic Allocating validators to operation could face denial of service if one of the operator was inactive.",
+  "issueId": 97,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/97"
+}
