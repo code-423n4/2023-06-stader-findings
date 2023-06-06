@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "0xWaitress",
+  "risk": "3",
+  "title": "claim in UserWithdrawalManager would block the queue since it swaps the latestWithdrawal at the back to the head through deleteRequestId",
+  "issueId": 72,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/72"
+}
