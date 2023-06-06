@@ -128,3 +128,15 @@ function addValidatorKeys(
             uint256 lockedEthX = userWithdrawInfo.ethXAmount;
             uint256 minEThRequiredToFinalizeRequest = Math.min(requiredEth, (lockedEthX * exchangeRate) / DECIMALS);
 ```
+
+11. add a way to sunset the allowance of a auctionContract on SD Collateral by setting its allowance to 0. Right now the maxApproveSD function would set allowance for auctionContract to `type(uint256).max`. But if a new auctionContract is updated, the allowance of the old auctionContract cannot be revoked.
+
+```solidity
+    /// @notice for max approval to auction contract for spending SD tokens
+    function maxApproveSD() external override {
+        UtilLib.onlyManagerRole(msg.sender, staderConfig);
+        address auctionContract = staderConfig.getAuctionContract();
+        UtilLib.checkNonZeroAddress(auctionContract);
+        IERC20(staderConfig.getStaderToken()).approve(auctionContract, type(uint256).max);
+    }
+```
