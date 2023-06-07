@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "peanuts",
+  "risk": "3",
+  "title": "Attacker can force user to pay a lot of gas fees and even experience out of gas loops by populating a user's array of requests",
+  "issueId": 140,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/140"
+}
