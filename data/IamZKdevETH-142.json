@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "IamZKdevETH",
+  "risk": "3",
+  "title": "Insecure State Update in claimSD Function",
+  "issueId": 142,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/142"
+}
