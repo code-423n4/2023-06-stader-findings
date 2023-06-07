@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "jaraxxus",
+  "risk": "2",
+  "title": "contract Auction.sol does not have pause function exposed",
+  "issueId": 159,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/159"
+}
