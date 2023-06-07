@@ -1,6 +1,55 @@
 # GAS OPTIMIZATIONS
 
-## [G-] External calls should be cached outside the loop 
+##
+
+## [G-] Using storage instead of memory for structs/arrays saves gas
+
+Results : Saves  ``8400 gas`` 
+
+When fetching data from a storage location, assigning the data to a memory variable causes all fields of the struct/array to be read from storage, which incurs a ``Gcoldsload (2100 gas)`` for each field of the struct/array. If the fields are read from the new memory variable, they incur an additional MLOAD rather than a cheap stack read. Instead of declearing the variable with the memory keyword, declaring the variable with the storage keyword and caching any fields that need to be re-read in stack variables, will be much cheaper, only incuring the Gcoldsload for the fields actually read. The only time it makes sense to read the whole struct/array into a memory variable, is if the full struct/array is being returned by the function, is being passed to a function that requires memory, or if the array/struct is being read from another memory array/struct.
+
+### Using ``storage`` variables can potentially save gas by ``eliminating the cost of copying the struct from storage to memory``
+
+### Instance 1
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L733
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L739
+
+### Saves ``4200 GAS``
+
+```diff
+FILE: 2023-06-stader/contracts/PermissionedNodeRegistry.sol
+
+- 733:  Validator memory validator = validatorRegistry[_validatorId];
++ 733:  Validator storage validator = validatorRegistry[_validatorId];
+
+
+- 739:  Validator memory validator = validatorRegistry[_validatorId];
++ 739:  Validator storage validator = validatorRegistry[_validatorId];
+
+```
+
+### Instance 2 
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#LL692C9-L692C70
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#L702
+
+### Saves ``4200 GAS``
+
+```diff
+FILE: 2023-06-stader/contracts/PermissionlessNodeRegistry.sol
+
+- 692: Validator memory validator = validatorRegistry[_validatorId];
++ 692: Validator storage validator = validatorRegistry[_validatorId];
+
+- 702: Validator memory validator = validatorRegistry[_validatorId];
++ 702: Validator storage validator = validatorRegistry[_validatorId];
+```
+##
+
+## [G-] External function calls should be cached outside the loop 
 
 When caching external call values, it's generally more efficient to perform the external call outside of any loops to avoid unnecessary redundant calls.
 
@@ -8,7 +57,7 @@ In terms of opcode savings, caching the external call result outside the loop ca
 
 https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/StaderStakePoolsManager.sol#L231-L239
 
-### ``staderConfig.getStakedEthPerNode()`` external call should be cached outside the loop to avoid redundant calls saves ``700 GAS`` for every iterations.
+### ``staderConfig.getStakedEthPerNode()`` external call should be cached outside the loop to avoid redundant calls saves at least ``700 GAS`` for every iterations.
 
 ```diff
 
@@ -49,7 +98,7 @@ FILE: Breadcrumbs2023-06-stader/contracts/PermissionlessPool.sol
 
 ## [G-] Avoid emitting storage variable when stack variable available 
 
-Results : Saves ``5 SLOD``, ``500 gas`` 
+Results : Saves ``4 SLOD``, ``400 gas`` 
 
 - When accessing a storage variable, an opcode like SLOAD is used to read the value from storage into the stack. This incurs a gas cost based on the complexity of accessing storage and the amount of data being loaded
 
@@ -138,30 +187,120 @@ FILE: 2023-06-stader/contracts/Penalty.sol
 101:            if (UtilLib.getValidatorSettleStatus(_pubkey[i], _staderConfig)) {
 
 ```
-
-## [G-] Using storage instead of memory for structs/arrays saves gas
-
 ##
 
-## [G-] Use calldata instead of memory 
+## [G-] Using bools for storage incurs overhead
 
+```
+   // Booleans are more expensive than uint256 or any type that takes up a full
+    // word because each write operation emits an extra SLOAD to first read the
+    // slot's contents, replace the bits taken up by the boolean, and then write
+    // back. This is the compiler's defense against contract upgrades and
+    // pointer aliasing, and it cannot be disabled.
+
+```
+
+https://github.com/OpenZeppelin/openzeppelin-contracts/blob/58f635312aa21f947cae5f8578638a85aa2519f5/contracts/security/ReentrancyGuard.sol#L23-L27 Use uint256(1) and uint256(2) for true/false to avoid a Gwarmaccess (100 gas) for the extra SLOAD, and to avoid Gsset (20000 gas) when changing from false to true, after having been true in the past
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#LL54C4-L54C61
+
+```solidity
+FILE: Breadcrumbs2023-06-stader/contracts/PermissionedNodeRegistry.sol
+
+54: mapping(address => bool) public override permissionList;
+
+```
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/StaderOracle.sol#L18-L19
+
+```solidity
+FILE: 2023-06-stader/contracts/StaderOracle.sol
+
+18: bool public override erInspectionMode;
+19: bool public override isPORFeedBasedERData;
+
+44:  mapping(address => bool) public override isTrustedNode;
+45:  mapping(bytes32 => bool) private nodeSubmissionKeys;
+
+```
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/VaultProxy.sol#L10-L11
+
+```solidity
+FILE: 2023-06-stader/contracts/VaultProxy.sol
+
+10: bool public override isValidatorWithdrawalVault;
+11: bool public override isInitialized;
+
+```
 ##
- 
-## [G-] State variables can be packed into fewer storage slots	2	-
 
-##
+## [G-] Caching global variables is more expensive than using the actual variable (use msg.sender instead of caching it)
 
-## [G-] [G‑06]	Structs can be packed into fewer storage slots	2	-
+Caching global variable consumes extra 13 gas 
 
-##
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/SDCollateral.sol#L59
 
-## [G-] Values only set in the constructor should be immutable 
+### ``msg.sender`` cache global variables is more expensive. This cost extra ``13 GAS`` 
 
-##
+```diff
+FILE: Breadcrumbs2023-06-stader/contracts/SDCollateral.sol
 
-## [G-] Bool incurs overhead 
+INSTANCE 1: 
 
-##
+- 59:  address operator = msg.sender;
+- 60:        uint256 opSDBalance = operatorSDBalance[operator];
++ 60:        uint256 opSDBalance = operatorSDBalance[msg.sender];
+61:
+- 62:        if (opSDBalance < getOperatorWithdrawThreshold(operator) + _requestedSD) {
++ 62:        if (opSDBalance < getOperatorWithdrawThreshold(msg.sender) + _requestedSD) {
+63:            revert InsufficientSDToWithdraw(opSDBalance);
+64:        }
+- 65:        operatorSDBalance[operator] -= _requestedSD;
++ 65:        operatorSDBalance[msg.sender] -= _requestedSD;
+66:
+67:        // cannot use safeERC20 as this contract is an upgradeable contract
+- 68:        if (!IERC20(staderConfig.getStaderToken()).transfer(payable(operator), _requestedSD)) {
++ 68:        if (!IERC20(staderConfig.getStaderToken()).transfer(payable(msg.sender), _requestedSD)) {
+69:            revert SDTransferFailed();
+70:        }
+71:
+- 72:        emit SDWithdrawn(operator, _requestedSD);
++ 72:        emit SDWithdrawn(msg.sender, _requestedSD);
+73:    }
+
+INSTANCE: 1
+
+- 44:  address operator = msg.sender;
+- 45:        operatorSDBalance[operator] += _sdAmount;
++ 45:        operatorSDBalance[msg.sender] += _sdAmount;
+46:
+- 47:        if (!IERC20(staderConfig.getStaderToken()).transferFrom(operator, address(this), _sdAmount)) {
++ 47:        if (!IERC20(staderConfig.getStaderToken()).transferFrom(msg.sender, address(this), _sdAmount)) {
+48:            revert SDTransferFailed();
+49:        }
+50:
+- 51:        emit SDDeposited(operator, _sdAmount);
++ 51:        emit SDDeposited(msg.sender, _sdAmount);
+
+```
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/SocializingPool.sol#L113
+
+### ``msg.sender`` cache global variables is more expensive. This cost extra ``13 GAS`` 
+
+```diff
+FILE: Breadcrumbs2023-06-stader/contracts/SocializingPool.sol
+
+- 113: address operator = msg.sender;
+- 114:        (uint256 totalAmountSD, uint256 totalAmountETH) = _claim(_index, operator, _amountSD, _amountETH, _merkleProof);
++ 114:        (uint256 totalAmountSD, uint256 totalAmountETH) = _claim(_index, msg.sender, _amountSD, _amountETH, _merkleProof);
+
+- 116:        address operatorRewardsAddr = UtilLib.getOperatorRewardAddress(operator, staderConfig);
++ 116:        address operatorRewardsAddr = UtilLib.getOperatorRewardAddress(msg.sender, staderConfig);
+
+```
+
+
 
 ## [G-] Avoid initialize default values 
 
