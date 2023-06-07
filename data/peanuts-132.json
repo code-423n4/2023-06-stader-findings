@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "peanuts",
+  "risk": "2",
+  "title": "Attackers can DoS users from finalizing their withdraw request by adding many dust withdraw requests in the queue",
+  "issueId": 132,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/132"
+}
