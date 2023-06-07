@@ -1,7 +1,7 @@
 # Overview
 This QA report addresses two key issues within the Stader protocol's smart contract codebase. The first pertains to informational naming and consistency within the Auction contract. The second relates to the ordering of functions and naming of internal functions within the SDCollateral contract. Each of these areas has been identified as requiring attention to align with best practices and improve code readability and maintainability.
 
-#Informational Naming
+# Informational Naming
 Within the Auction contract, there is an inconsistency in the capitalization of an error message in the [claimSD](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#L83) function:
 ```
 if (msg.sender != lotItem.highestBidder) revert notQualified();
@@ -28,7 +28,7 @@ Functions should be grouped according to their visibility and ordered:
 - internal
 - private
 
-# SDCollateral slashSD internal function
+## SDCollateral slashSD internal function
 In reviewing the SDCollateral contract, it was noted that the slashSD internal function does not adhere to the recommended order. This function is found within the block of external functions. Specifically, slashSD is situated between two external functions in the codebase, which can potentially cause confusion.
 
 Here is the specific location of the slashSD function in the contract:
@@ -38,7 +38,7 @@ https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c0
 It is considered a good practice to prefix the names of internal and private functions with an underscore (_). This convention allows developers to immediately recognize the intended visibility of a function, improving clarity and reducing the likelihood of inadvertent visibility errors.
 
 
-# Recommendations
+## Recommendations
 For maintaining clarity and standard code organization practices, it is recommended that the slashSD function be relocated to the internal functions section of the contract. This change will align the contract with the recommended order and promote better readability and maintainability of the contract code.
 
 By implementing this improvement, the contract would be easier to understand, thus reducing the potential for misunderstanding and bugs. This will also facilitate future code reviews and audits.
@@ -52,7 +52,7 @@ function _transfer(address from, address to, uint256 amount) internal {
 ```
 https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/e29e42a529dafcdb5d792cfef97ce71ea0388045/contracts/token/ERC20/ERC20Upgradeable.sol#L222
 
-# Conclusion
+## Conclusion
 Implementing these changes will enhance the clarity and maintainability of the Stader protocol's smart contract code. By aligning with best practices, these improvements will also facilitate future code reviews and audits, ultimately contributing to the robustness and reliability of the protocol.
 
 ## Other internal functions without (_) prefix:
@@ -130,3 +130,69 @@ Implementing these changes will enhance the clarity and maintainability of the S
 **ValidatorWithdrawalVault.sol**
 - getCollateralETH
 - getOperatorAddress
+
+# Order of Layout
+Layout contract elements in the following order:
+1. Pragma statements
+2. Import statements
+3. Interfaces
+4. Libraries
+5. Contracts
+
+Inside each contract, library or interface, use the following order:
+
+1. Type declarations
+2. State variables
+3. Events
+4. Errors
+4. Modifiers
+5. Functions
+
+## onlyExistingPoolId modifier should be declared before functions
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PoolUtils.sol#L295
+
+### Description
+In the PoolUtils contract, the onlyExistingPoolId modifier is declared after some of the functions. It is recommended to declare modifiers before functions for better readability and consistency.
+
+### Impact
+The current order of declaring the onlyExistingPoolId modifier after functions does not have any functional impact on the contract. However, it can make the code harder to read and understand, especially for developers who are not familiar with the codebase.
+
+### Recommendation
+To improve code readability and maintainability, it is recommended to declare the onlyExistingPoolId modifier before the functions that use it. This follows a common convention in Solidity contracts and makes it easier for developers to identify and understand the modifiers applied to functions.
+
+```
+modifier onlyExistingPoolId(uint8 _poolId) {
+    if (!isExistingPoolId(_poolId)) {
+        revert PoolIdNotPresent();
+    }
+    _;
+}
+
+function addNewPool(uint8 _poolId, address _poolAddress) external override onlyExistingPoolId(_poolId) {
+    // Function implementation
+}
+
+function updatePoolAddress(uint8 _poolId, address _newPoolAddress)
+    external
+    override
+    onlyExistingPoolId(_poolId)
+    onlyRole(DEFAULT_ADMIN_ROLE)
+{
+    // Function implementation
+}
+
+// Rest of the functions...
+```
+
+By declaring the onlyExistingPoolId modifier before the functions that use it, the code follows a more standard and readable structure.
+
+
+### List of Modifier after functions
+
+**StaderOracle.sol**
+- checkERInspectionMode
+- trustedNodeOnly
+- checkMinTrustedNodes
+
+**VaultProxy.sol**
+- onlyOwner
