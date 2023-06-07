@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Praise",
+  "risk": "2",
+  "title": "in PermissionedPool.stakeUserETHToBeaconChain(), the first item on the list will always be left out when looping through `selectedOperatorCapacityLength`.",
+  "issueId": 162,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/162"
+}
