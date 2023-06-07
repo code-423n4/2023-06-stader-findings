@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "trustOne",
+  "risk": "2",
+  "title": "Any user has the ability to transfer all of the native token from the PermissionedPool to the StaderStakePoolManager.",
+  "issueId": 149,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/149"
+}
