@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "peanuts",
+  "risk": "2",
+  "title": "createLot() in Auction.sol is permissionless, which may create undesired behaviour",
+  "issueId": 151,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/151"
+}
