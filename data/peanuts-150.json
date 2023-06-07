@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "peanuts",
+  "risk": "2",
+  "title": "The winning bid of the auction in Auction.sol can be frontrunned or the last bidder can block-stuff to win the bid",
+  "issueId": 150,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/150"
+}
