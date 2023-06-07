@@ -54,3 +54,15 @@ https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/e29e42a5
 
 # Conclusion
 Implementing these changes will enhance the clarity and maintainability of the Stader protocol's smart contract code. By aligning with best practices, these improvements will also facilitate future code reviews and audits, ultimately contributing to the robustness and reliability of the protocol.
+
+## Other internal functions without (_) prefix:
+- [onboardOperator](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L661)
+- [handleFrontRun](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L671)
+- [getOperatorQueuedValidatorCount](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L680)
+- [checkInputKeysCountAndCollateral](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L687)
+- [onlyActiveOperator](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L720)
+- [isActiveValidator](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L732)
+- [isNonTerminalValidator](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L738)
+- [decreaseTotalActiveValidatorCount](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L747)
+- [getCollateralETH](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/ValidatorWithdrawalVault.sol#LL127C14-L127C30)
+- etc
