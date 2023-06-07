@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "IamZKdevETH",
+  "risk": "3",
+  "title": "The function createLot has potential risks as the state of the lot is being updated before the actual transfer of tokens is confirmed.",
+  "issueId": 138,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/138"
+}
