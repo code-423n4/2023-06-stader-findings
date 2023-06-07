@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "IamZKdevETH",
+  "risk": "2",
+  "title": "In the slashSD function, and specifically the risk of state inconsistency that might arise if the createLot function fails for any reason after the operator's balance has been decreased.",
+  "issueId": 137,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/137"
+}
