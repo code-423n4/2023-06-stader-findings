@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Praise",
+  "risk": "2",
+  "title": "PermissionedNodeRegistry.getTotalQueuedValidatorCount() won't return all totalQueuedValidators",
+  "issueId": 163,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/163"
+}
