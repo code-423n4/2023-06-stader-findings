@@ -2,6 +2,16 @@
 
 ##
 
+Don’t use payable.call()
+payable.call() is a low-level method that can be used to send ether to a contract, but it has some limitations and risks as you've pointed out. One of the primary risks of using payable.call() is that it doesn't guarantee that the contract's payable function will be called successfully. This can lead to funds being lost or stuck in the contract
+
+The contract does not have a payable callback
+The contract’s payable callback spends more than 2300 gas (which is only enough to emit something)
+The contract is called through a proxy which itself uses up the 2300 gas Use OpenZeppelin’s Address.sendValue() instead
+FILE: 2023-04-rubicon/contracts/utilities/FeeWrapper.sol
+
+118: (bool OK, ) = payable(_feeTo).call{value: _feeAmount}("");
+
 ## [L-1] Unbounded loop
 
 ``nextOperatorId`` the value is only incremented .
@@ -37,6 +47,15 @@ FILE: Breadcrumbs2023-06-stader/contracts/Auction.sol
 + 22: uint256 public constant MIN_AUCTION_DURATION = 7200; // 2 hours
 ```
 https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#LL22C5-L22C69
+
+update codes to avoid Compile Errors: 
+
+add a timelock to critical functions:
+
+Critical changes should use two-step procedure
+
+Tokens accidentally sent to the contract cannot be recovered
+
 
 
 
