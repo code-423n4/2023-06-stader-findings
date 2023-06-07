@@ -57,3 +57,23 @@ function initialize(address _admin, address _staderConfig) external initializer 
 +    _grantRole(NODE_REGISTRY_CONTRACT, _msgSender());
 }
 ```
+## Strict Reporting Block Number Updates and Consideration for Potential Delays
+The StaderOracle contract enforces strict reporting block number updates based on predetermined update frequencies. For example, the update frequencies are set as follows:
+
+[. ETHX_ER_UF: 7200 blocks
+. SD_PRICE_UF: 7200 blocks
+. VALIDATOR_STATS_UF: 7200 blocks
+. WITHDRAWN_VALIDATORS_UF: 14400 blocks](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/StaderOracle.sol#L70-L73)
+
+To ensure accurate data, the reporting block numbers must be updated strictly at block numbers that are multiples of their respective update frequencies. However, it's important to consider potential delays that may prevent timely updates.
+
+For instance, let's take the ETHX_ER_UF data type as an example. If the current reporting block number is not a multiple of 7200, it indicates a missed update. The next update for this data type would need to occur at the next multiple of 7200 blocks, resulting in a potential delay in data availability. Otherwise, calling function `submitExchangeRateData` is going to readily revert:
+
+https://github.com/code-423n4/2023-06-stader/blob/main/contracts/StaderOracle.sol#L121-L123
+
+```solidity
+        if (_exchangeRate.reportingBlockNumber % updateFrequencyMap[ETHX_ER_UF] > 0) {
+            revert InvalidReportingBlock();
+        }
+```
+Contract operators should be aware of potential delays caused by blockchain congestion or other factors. They should closely monitor the reporting block numbers and strive to meet the update frequencies to avoid data becoming stale. If frequent delays are encountered, it may be necessary to adjust the chosen update frequencies to better align with the blockchain's performance and ensure timely and accurate data updates.
