@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Bauchibred",
+  "risk": "2",
+  "title": " Poor Validation of the Price Allows Casting Negative Price to uint256 in `updateERFromPORFeed() `",
+  "issueId": 118,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/118"
+}
