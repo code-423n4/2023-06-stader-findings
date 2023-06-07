@@ -56,6 +56,8 @@ https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/e29e42a5
 Implementing these changes will enhance the clarity and maintainability of the Stader protocol's smart contract code. By aligning with best practices, these improvements will also facilitate future code reviews and audits, ultimately contributing to the robustness and reliability of the protocol.
 
 ## Other internal functions without (_) prefix:
+
+**PermissionedNodeRegistry.sol**
 - [onboardOperator](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L661)
 - [handleFrontRun](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L671)
 - [getOperatorQueuedValidatorCount](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L680)
@@ -64,5 +66,67 @@ Implementing these changes will enhance the clarity and maintainability of the S
 - [isActiveValidator](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L732)
 - [isNonTerminalValidator](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L738)
 - [decreaseTotalActiveValidatorCount](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L747)
-- [getCollateralETH](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/ValidatorWithdrawalVault.sol#LL127C14-L127C30)
-- etc
+- [onlyPreDepositValidator](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L656)
+- [markValidatorDeposited](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L758)
+
+**PermissionedPool.sol**
+- [increasePreDepositValidatorCount](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedPool.sol#L279)
+- [decreasePreDepositValidatorCount](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedPool.sol#L283)
+- [preDepositOnBeaconChain](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedPool.sol#L288)
+- [to_little_endian_64](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedPool.sol#L321)
+
+**PermissionlessNodeRegistry.sol**
+- onboardOperator
+- markKeyReadyToDeposit
+- handleFrontRun
+- handleInvalidSignature
+- checkInputKeysCountAndCollateral
+- onlyActiveOperator
+- isNonTerminalValidator
+- isActiveValidator
+- decreaseTotalActiveValidatorCount
+- onlyInitializedValidator
+- markValidatorDeposited
+
+**PermissionlessPool.sol**
+- fullDepositOnBeaconChain
+- to_little_endian_64
+
+** PoolUtils.sol**
+- verifyNewPool
+- getPoolCount
+
+**SDCollateral.sol**
+- slashSD
+- getOperatorInfo
+- isPoolThresholdValid
+
+**StaderConfig.sol**
+- setConstant
+- setVariable
+- setAccount
+- setContract
+- setToken
+- verifyDepositAndWithdrawLimits
+
+**StaderOracle.sol**
+- insertSDPrice
+- getMedianValue
+- setUpdateFrequency
+- getReportableBlockFor
+- attestSubmission
+- getPORFeedData
+- updateWithInLimitER
+- insertSDPrice
+
+**StaderStakePoolsManager.sol**
+- initialConvertToShares
+
+**UserWithdrawalManager.sol**
+- deleteRequestId
+- sendValue
+
+
+**ValidatorWithdrawalVault.sol**
+- getCollateralETH
+- getOperatorAddress
