@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "peanuts",
+  "risk": "2",
+  "title": "UserWithdrawalManager#finalizeUserWithdrawalRequest may be undesirable to call if gas prices is too high, leading to no one calling finalizeUserWithdrawalRequest() ",
+  "issueId": 147,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/147"
+}
