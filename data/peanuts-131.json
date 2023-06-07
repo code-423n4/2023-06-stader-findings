@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "peanuts",
+  "risk": "2",
+  "title": "erc4626 previewWithdraw is not implemented correctly in StaderStakePoolsManager.sol",
+  "issueId": 131,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/131"
+}
