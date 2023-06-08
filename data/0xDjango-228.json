@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "0xDjango",
+  "risk": "2",
+  "title": "Missing `whenNotPaused` modifier on `submitSDPrice()`",
+  "issueId": 228,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/228"
+}
