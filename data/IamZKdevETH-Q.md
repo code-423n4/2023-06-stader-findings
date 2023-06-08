@@ -2,7 +2,7 @@
 This QA report addresses two key issues within the Stader protocol's smart contract codebase. The first pertains to informational naming and consistency within the Auction contract. The second relates to the ordering of functions and naming of internal functions within the SDCollateral contract. Each of these areas has been identified as requiring attention to align with best practices and improve code readability and maintainability.
 
 # Informational Naming
-Within the Auction contract, there is an inconsistency in the capitalization of an error message in the [claimSD](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#L83) function:
+1) Within the Auction contract, there is an inconsistency in the capitalization of an error message in the [claimSD](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#L83) function:
 ```
 if (msg.sender != lotItem.highestBidder) revert notQualified();
 ```
@@ -12,6 +12,9 @@ The lowercase naming of notQualified does not match the usual practice of starti
 if (msg.sender != lotItem.highestBidder) revert NotQualified(); 
 ```
 
+
+2) The initialise function in the VaultProxy contract should be named initialize to align with the existing function name used in the code. Additionally, the function should have the initializer modifier from the OpenZeppelin library to enforce one-time initialization.
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/VaultProxy.sol#L20
 
 # Order of Functions and naming internal function
 The order of functions as per their visibility
@@ -217,3 +220,4 @@ https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c0
 - mapping(bytes32 => bool) private nodeSubmissionKeys;
 - mapping(bytes32 => uint8) private submissionCountKeys;
 - uint256[] private sdPrices;
+
