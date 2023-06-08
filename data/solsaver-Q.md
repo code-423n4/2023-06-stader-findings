@@ -81,3 +81,155 @@ File: contracts/PermissionedNodeRegistry.sol
 ```
 
 https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L227-L229
+
+---
+
+# Several State variables can be initialized outside the initialize method
+
+There are many state variables that are initialized in the `initialize` method with a constant. These variables have corresponding methods to update them as well.
+
+Initializing them in the `initialize` method seems unnecessary, as thats the first step after a contract is deployed.
+
+As long as the variables have a setter method, and they are initialized to a constant value, it can be moved out from the `initialize` method. This will also save a lot of gas.
+
+```
+File: contracts/Penalty.sol
+
+31:    function initialize(
+32:        address _admin,
+33:        address _staderConfig,
+34:        address _ratedOracleAddress
+35:    ) external initializer {
+        ...
+        ...
+44:        mevTheftPenaltyPerStrike = 1 ether;
+45:        missedAttestationPenaltyPerStrike = 0.2 ether;
+46:        validatorExitPenaltyThreshold = 2 ether;
+        ...
+        ...
+50:    }
+
+```
+
+Link: https://github.com/code-423n4/2023-06-stader/blob/main/contracts/Penalty.sol#L44-46
+
+##### Fix:
+
+```
+-    uint256 public override mevTheftPenaltyPerStrike;
+-    uint256 public override missedAttestationPenaltyPerStrike;
+-    uint256 public override validatorExitPenaltyThreshold;
++    uint256 public mevTheftPenaltyPerStrike = 1 ether;
++    uint256 public missedAttestationPenaltyPerStrike = 0.2 ether;
++    uint256 public validatorExitPenaltyThreshold = 2 ether;
+...
+...
+    function initialize(
+        address _admin,
+        address _staderConfig,
+        address _ratedOracleAddress
+    ) external initializer {
+         ...
+         ...
+-        mevTheftPenaltyPerStrike = 1 ether;
+-        missedAttestationPenaltyPerStrike = 0.2 ether;
+-        validatorExitPenaltyThreshold = 2 ether;
+         ...
+         ...
+    }
+
+```
+
+Other Instances:
+
+```
+File: contracts/Auction.sol
+
+38:        duration = 2 * MIN_AUCTION_DURATION;
+39:        bidIncrement = 5e15;
+40:        nextLot = 1;
+```
+
+Link: https://github.com/code-423n4/2023-06-stader/blob/main/contracts/Auction.sol#L38-L40
+
+
+```
+File: contracts/PermissionedNodeRegistry.sol
+
+73:        nextOperatorId = 1;
+74:        nextValidatorId = 1;
+75:        operatorIdForExcessDeposit = 1;
+76:        inputKeyCountLimit = 50;
+77:        maxOperatorId = 10;
+78:        maxNonTerminalKeyPerOperator = 50;
+79:        verifiedKeyBatchSize = 50;
+```
+
+Link: https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L73-L79
+
+```
+File: contracts/PermissionedPool.sol
+
+45:        protocolFee = 500;
+46:        operatorFee = 500;
+```
+
+Link: https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedPool.sol#L45-L46
+
+```
+File: contracts/PermissionlessNodeRegistry.sol
+
+73:        nextOperatorId = 1;
+74:        nextValidatorId = 1;
+75:        inputKeyCountLimit = 30;
+76:        maxNonTerminalKeyPerOperator = 50;
+77:        verifiedKeyBatchSize = 50;
+```
+
+Link: https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L73-L77
+
+```
+File: contracts/PermissionlessPool.sol
+
+43:        protocolFee = 500;
+44:        operatorFee = 500;
+```
+
+Link: https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessPool.sol#L43-L44
+
+```
+File: contracts/PoolSelector.sol
+
+40:        poolAllocationMaxSize = 50;
+```
+
+Link: https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PoolSelector.sol#L40
+
+```
+File: contracts/StaderOracle.sol
+
+69:        erChangeLimit = 500; //5% deviation threshold
+```
+
+Link: https://github.com/code-423n4/2023-06-stader/blob/main/contracts/StaderOracle.sol#L69
+
+```
+File: contracts/StaderStakePoolsManager.sol
+
+57:        excessETHDepositCoolDown = 3 * 7200;
+```
+
+Link: https://github.com/code-423n4/2023-06-stader/blob/main/contracts/StaderStakePoolsManager.sol#L57
+
+```
+File: contracts/UserWithdrawalManager.sol
+
+61:        nextRequestIdToFinalize = 1;
+62:        nextRequestId = 1;
+63:        finalizationBatchLimit = 50;
+64:        maxNonRedeemedUserRequestCount = 1000;
+```
+
+Link: https://github.com/code-423n4/2023-06-stader/blob/main/contracts/UserWithdrawalManager.sol#L61-L64
+
+---
