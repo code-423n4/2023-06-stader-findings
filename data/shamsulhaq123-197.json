@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "shamsulhaq123",
+  "risk": "2",
+  "title": "Secure Handling of Excess Ether Balances in transferExcessETHToSSPM() Function",
+  "issueId": 197,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/197"
+}
