@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "tsvetanovv",
+  "risk": "2",
+  "title": "Under certain circumstances, it is possible for `lotItem` to remain stuck in the contract",
+  "issueId": 206,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/206"
+}
