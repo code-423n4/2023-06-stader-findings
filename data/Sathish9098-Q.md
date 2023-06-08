@@ -1,42 +1,96 @@
 # LOW FINDINGS
 
-##
+## [L-1] Don’t use payable.call()
 
-Don’t use payable.call()
 payable.call() is a low-level method that can be used to send ether to a contract, but it has some limitations and risks as you've pointed out. One of the primary risks of using payable.call() is that it doesn't guarantee that the contract's payable function will be called successfully. This can lead to funds being lost or stuck in the contract
 
 The contract does not have a payable callback
 The contract’s payable callback spends more than 2300 gas (which is only enough to emit something)
 The contract is called through a proxy which itself uses up the 2300 gas Use OpenZeppelin’s Address.sendValue() instead
-FILE: 2023-04-rubicon/contracts/utilities/FeeWrapper.sol
 
-118: (bool OK, ) = payable(_feeTo).call{value: _feeAmount}("");
-
-## [L-1] Unbounded loop
-
-``nextOperatorId`` the value is only incremented .
-
-PermissionlessNodeRegistry.allocateValidatorsAndUpdateOperatorId() will iterate all the OperatorId.
-
-Currently, ``nextOperatorId`` can grow indefinitely. E.g. there’s no maximum limit and there’s no functionality to remove assets
-
-If the value grows too large, calling PermissionlessNodeRegistry.allocateValidatorsAndUpdateOperatorId() might run out of gas and revert. Claiming and distributing rewards will result in a DOS condition.
-
-
-
-## [L-1] Initialize functions could be front run 
-
-```diff
+```solidity
 FILE: 2023-06-stader/contracts/Auction.sol
 
-29: function initialize(address _admin, address _staderConfig) external initializer {
+131:  (bool success, ) = payable(msg.sender).call{value: withdrawalAmount}('');
 
 ```
-https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#L29
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#LL131C8-L131C82
+
+```solidity
+FILE: 2023-06-stader/contracts/SocializingPool.sol
+
+91:  (bool success, ) = payable(staderConfig.getStaderTreasury()).call{value: _rewardsData.protocolETHRewards} 
+     ('');
+121: (success, ) = payable(operatorRewardsAddr).call{value: totalAmountETH}('');
+
+```
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/SocializingPool.sol#LL121C13-L121C88
+
+```solidity
+FILE: 2023-06-stader/contracts/StaderStakePoolsManager.sol
+
+102: (bool success, ) = payable(staderConfig.getUserWithdrawManager()).call{value: _amount}('');
+
+```
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/StaderStakePoolsManager.sol#L102
+
+### Recommended Mitigation
+
+Use OpenZeppelin’s Address.sendValue()
+
 
 ##
 
-## [L-] Inconsistency between the comment and the actual value assigned
+## [L-2] Use .call instead of .transfer to send ether
+
+.transfer will relay 2300 gas and .call will relay all the gas. If the receive/fallback function from the recipient proxy contract has complex logic, using .transfer will fail, causing integration issues
+
+````solidity
+FILE: 2023-06-stader/contracts/Auction.sol
+
+114:  if (!IERC20(staderConfig.getStaderToken()).transfer(staderConfig.getStaderTreasury(), _sdAmount)) {
+
+```
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#LL114C8-L114C108
+
+```solidity
+FILE: 2023-06-stader/contracts/SDCollateral.sol
+
+68:  if (!IERC20(staderConfig.getStaderToken()).transfer(payable(operator), _requestedSD)) {
+
+```
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/SDCollateral.sol#LL68C8-L68C96
+
+### Recommended Mitigation
+
+Replace .transfer with .call. Note that the result of .call need to be checked. 
+
+
+## [L-3] Unbounded loop
+
+### This instance not found by bot race. This is most important Unbounded loop logic 
+
+``nextOperatorId`` the value is only incremented .
+
+PermissionedNodeRegistry.allocateValidatorsAndUpdateOperatorId() will iterate all the OperatorId.
+
+Currently, ``nextOperatorId`` can grow indefinitely. E.g. there’s no maximum limit and there’s no functionality to remove OperatorId
+
+If the value grows too large, calling PermissionedNodeRegistry.allocateValidatorsAndUpdateOperatorId() might run out of gas and revert. 
+
+```solidity
+FILE: Breadcrumbs2023-06-stader/contracts/PermissionedNodeRegistry.sol
+
+206:  for (uint256 i = 1; i < nextOperatorId; ) {
+
+488: for (uint256 i = 1; i < nextOperatorId; ) {
+
+```
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L488
+
+##
+
+## [L-4] Inconsistency between the comment and the actual value assigned
 
  It appears that there is an inconsistency between the comment and the actual value assigned to the constant variable. The comment states that the value represents a 24-hour duration, but the assigned value of 7200 actually corresponds to a duration of 2 hours
 
@@ -48,6 +102,40 @@ FILE: Breadcrumbs2023-06-stader/contracts/Auction.sol
 ```
 https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#LL22C5-L22C69
 
+##
+
+## [L-5] Resolve the warning to avoid unexpected behavior 
+
+```
+Warning (3628): Warning: This contract has a payable fallback function, but no receive ether function. Consider adding a receive ether function.
+ --> contracts/VaultProxy.sol:8:1:
+  |
+8 | contract VaultProxy is IVaultProxy {
+  | ^ (Relevant source part starts here and spans across multiple lines).
+Note: The payable fallback function is defined here.
+  --> contracts/VaultProxy.sol:41:5:
+   |
+41 |     fallback(bytes calldata _input) external payable returns (bytes memory) {
+   |     ^ (Relevant source part starts here and spans across multiple lines).
+
+```
+
+##
+
+## [L-6] Consider using upgradable ERC20 contracts 
+
+Upgradable ERC20 contracts provide flexibility and allow for future upgrades and improvements to the contract's functionality without disrupting the existing ecosystem.
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/Auction.sol#L9
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/SDCollateral.sol#L14
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/SocializingPool.sol#L15
+
+
+
+
+
 update codes to avoid Compile Errors: 
 
 add a timelock to critical functions:
@@ -55,6 +143,8 @@ add a timelock to critical functions:
 Critical changes should use two-step procedure
 
 Tokens accidentally sent to the contract cannot be recovered
+
+
 
 
 
