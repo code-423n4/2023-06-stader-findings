@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "DadeKuma",
+  "risk": "2",
+  "title": "Users lose funds when deposit results in zero shares minted",
+  "issueId": 219,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/219"
+}
