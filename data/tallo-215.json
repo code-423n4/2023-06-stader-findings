@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "tallo",
+  "risk": "3",
+  "title": "StaderOracle's use of a uint8 results in DOS for certain nodes and voting functionality when the number of nodes exceeds 255",
+  "issueId": 215,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/215"
+}
