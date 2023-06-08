@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "DadeKuma",
+  "risk": "2",
+  "title": "Withdrawal system can be subject to DoS with a large amount of small requests",
+  "issueId": 221,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/221"
+}
