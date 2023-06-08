@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "tsvetanovv",
+  "risk": "3",
+  "title": "Precision loss due to division before multiplication in `getReportableBlockFor()`",
+  "issueId": 208,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/208"
+}
