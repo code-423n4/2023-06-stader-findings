@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "0xDjango",
+  "risk": "2",
+  "title": "After ER Inspection Cooldown has passed, any caller has power to save or delete inspection mode exchange rate data",
+  "issueId": 220,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/220"
+}
