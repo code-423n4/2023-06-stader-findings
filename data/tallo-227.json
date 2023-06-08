@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "tallo",
+  "risk": "2",
+  "title": "Multiple functions can not be paused even though they are intended to be pauseable",
+  "issueId": 227,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/227"
+}
