@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "sces60107",
+  "risk": "3",
+  "title": "`UtilLib.computeExchangeRate` returns the wrong value when `totalETHBalance == 0`",
+  "issueId": 182,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/182"
+}
