@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Praise",
+  "risk": "3",
+  "title": "PermissionlessPool.preDepositOnBeaconChain() doesn't ensure that arrays of _pubkey and _preDepositSignature are even and matched",
+  "issueId": 186,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/186"
+}
