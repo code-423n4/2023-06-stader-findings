@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "seerether",
+  "risk": "3",
+  "title": " Inability of the submitSDPrice function in the StaderOracle contract  to impose penalties or provide incentives for accurate submissions in the smart contract",
+  "issueId": 229,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/229"
+}
