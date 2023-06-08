@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Boreas",
+  "risk": "2",
+  "title": "Unauthorized Reward Claim and Potential Gas Loss in OperatorRewardsCollector.sol Contract",
+  "issueId": 216,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/216"
+}
