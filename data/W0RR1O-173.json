@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "W0RR1O",
+  "risk": "3",
+  "title": "Validators can set their penalty amount to `0` by calling the function `markValidatorSettled`",
+  "issueId": 173,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/173"
+}
