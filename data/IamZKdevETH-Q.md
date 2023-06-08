@@ -196,3 +196,24 @@ By declaring the onlyExistingPoolId modifier before the functions that use it, t
 
 **VaultProxy.sol**
 - onlyOwner
+
+# Underscore Prefix for Non-external Functions and Variables
+The contract does not consistently use an underscore prefix for private functions and variables, as recommended by the Solidity [style guide](https://docs.soliditylang.org/en/v0.8.20/style-guide.html). It is good practice to use an underscore prefix to clearly distinguish private functions and variables from public and external ones. Consider adding an underscore prefix to private functions and variables throughout the contract.
+
+## List of private Variables without _ prefix
+**StaderConfig.sol**
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/StaderConfig.sol#L74-L78
+- mapping(bytes32 => uint256) private constantsMap;
+- mapping(bytes32 => uint256) private variablesMap;
+- mapping(bytes32 => address) private accountsMap;
+- mapping(bytes32 => address) private contractsMap;
+- mapping(bytes32 => address) private tokensMap;
+
+**PoolUtils.sol**
+- uint64 private constant PUBKEY_LENGTH = 48;
+- uint64 private constant SIGNATURE_LENGTH = 96;
+
+**StaderOracle**
+- mapping(bytes32 => bool) private nodeSubmissionKeys;
+- mapping(bytes32 => uint8) private submissionCountKeys;
+- uint256[] private sdPrices;
