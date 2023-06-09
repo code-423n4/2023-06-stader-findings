@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "0xackermann",
+  "risk": "2",
+  "title": "Missing deadline checks allow pending withdrawal transactions to be maliciously executed",
+  "issueId": 273,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/273"
+}
