@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "RaymondFam",
+  "risk": "2",
+  "title": "Unnecessary Zero Index Check Denies Passing Index Value of 0 in SocializingPool Contract",
+  "issueId": 247,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/247"
+}
