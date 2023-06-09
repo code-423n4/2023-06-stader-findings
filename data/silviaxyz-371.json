@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "silviaxyz",
+  "risk": "2",
+  "title": "BidIncrement function could be manipulated by Manager for ongoing auctions",
+  "issueId": 371,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/371"
+}
