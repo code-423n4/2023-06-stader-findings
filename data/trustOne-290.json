@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "trustOne",
+  "risk": "2",
+  "title": "Pools cannot be updated forever",
+  "issueId": 290,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/290"
+}
