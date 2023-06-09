@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "dwward3n",
+  "risk": "2",
+  "title": "Strict equal can cause no consensus if trusted nodes are removed before consensus ",
+  "issueId": 321,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/321"
+}
