@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "sebghatullah",
+  "risk": "2",
+  "title": " Lack of Access Control in addBid Function can lead to Unauthorized Access",
+  "issueId": 276,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/276"
+}
