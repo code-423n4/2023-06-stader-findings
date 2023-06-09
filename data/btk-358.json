@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "btk",
+  "risk": "2",
+  "title": "A lot with a `lots.sdAmount` less than the `bidIncrement` cannot be bid on",
+  "issueId": 358,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/358"
+}
