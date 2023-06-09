@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "broccolirob",
+  "risk": "3",
+  "title": "`VaultProxy` implementation can be initialized by anyone and self-destructed",
+  "issueId": 418,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/418"
+}
