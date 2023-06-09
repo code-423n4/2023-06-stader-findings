@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "ksk2345",
+  "risk": "3",
+  "title": "Risk of losing admin access if updateAdmin set with same current admin address",
+  "issueId": 390,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/390"
+}
