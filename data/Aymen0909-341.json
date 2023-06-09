@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Aymen0909",
+  "risk": "3",
+  "title": "`updatePoolAddress` functions always reverts when updating existing poolId",
+  "issueId": 341,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/341"
+}
