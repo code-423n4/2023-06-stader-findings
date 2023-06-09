@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Aymen0909",
+  "risk": "2",
+  "title": "No slippage protection when depositing into StaderStakePoolsManager contract",
+  "issueId": 329,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/329"
+}
