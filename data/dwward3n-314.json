@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "dwward3n",
+  "risk": "2",
+  "title": "VaultProxy initialise can be frontrun",
+  "issueId": 314,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/314"
+}
