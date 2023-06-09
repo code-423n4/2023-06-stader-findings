@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Aymen0909",
+  "risk": "3",
+  "title": "`accountsMap[ADMIN]` not set in `initialize` function of `StaderConfig` contract",
+  "issueId": 347,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/347"
+}
