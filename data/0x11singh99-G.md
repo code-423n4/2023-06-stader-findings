@@ -1,6 +1,6 @@
-# [G-01] Memory variables can be cached to stack if reading and writing happening multiple times, saves almost 100 gas on each iteration 
+# [G-01] Memory variables can be cached to stack if reading and writing happening multiple times
 
-Memory variables should be cached to stack variables if re reading happening of same variables more than once, here for each iteration it will save 100 gas almost.
+Memory variables should be cached to stack variables if re-reading happening of same variables more than once, here for each iteration it will save 100 gas almost.
 [https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L210](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L210)
 ```solidity
 File : contracts/PermissionedNodeRegistry.sol
@@ -21,7 +21,7 @@ File : contracts/PermissionedNodeRegistry.sol
 ```
 Converting above to below code save more than 100 gas for each loop iteration
 Take 2 variables for caching from memory
-```solidity
+``` solidity
                 uint256 a;
                 uint256 b;
                 
@@ -32,7 +32,7 @@ Take 2 variables for caching from memory
                 b = Math.min(a, validatorPerOperator);
                 //@audit gas,converting <x>+=<y> -> <x>=<x>+<y> costs less gas
                 totalValidatorToDeposit = totalValidatorToDeposit + b;
-                //@audit gas,converting <x>+=<y> -> <x>=<x>+<y> costs less gas
+                //@audit gas,converting <x>-=<y> -> <x>=<x>-<y> costs less gas
                 a = a-b; 
                 unchecked {
                     ++i;
@@ -40,4 +40,81 @@ Take 2 variables for caching from memory
                 remainingOperatorCapacity[i] = a;
                 selectedOperatorCapacity[i] = b;
 
+```
+# [G-02]  <x>=<x>+<y> and <x>=<x>-<y> costs less gas compare to <x>+=<y> and <x>-=<y>
+### There are 4 instances of this
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L212](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L212)
+```solidity
+File: contracts/PermissionedNodeRegistry.sol
+ 212:   totalValidatorToDeposit += selectedOperatorCapacity[i];
+```
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L213](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L213)
+```solidity
+File: contracts/PermissionedNodeRegistry.sol
+213:   remainingOperatorCapacity[i] -= selectedOperatorCapacity[i];
+```
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L234](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L234)
+```solidity
+File: contracts/PermissionedNodeRegistry.sol
+234:   selectedOperatorCapacity[i] += newSelectedCapacity;
+```
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L235](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L235)
+```solidity
+File: contracts/PermissionedNodeRegistry.sol
+235:  remainingValidatorsToDeposit -= newSelectedCapacity;
+```
+
+# [G-03]  Calldata array elements  should be cached in stack variables rather than re-reading them from calldata array
+Cache calldata elements into stack variables if using same elements multiple times it save gas.
+## PermissionedNodeRegistry.sol.addValidatorKeys() : inside loop for each  *i*  value _pubkey[i], _preDepositSignature[i], _depositSignature[i] should be cached to stack variables (saves 412 gas on each iteration)
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L156](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L156)
+``` solidity
+File : contracts/PermissionedNodeRegistry.sol 
+   156:   IPoolUtils(poolUtils).onlyValidKeys(_pubkey[i], _preDepositSignature[i], _depositSignature[i]);
+            address withdrawVault = IVaultFactory(vaultFactory).deployWithdrawVault(
+                POOL_ID,
+                operatorId,
+                operatorTotalKeys + i, //operator totalKeys
+                nextValidatorId
+            );
+            validatorRegistry[nextValidatorId] = Validator(
+                ValidatorStatus.INITIALIZED,
+                _pubkey[i],
+                _preDepositSignature[i],
+                _depositSignature[i],
+                withdrawVault,
+                operatorId,
+                0,
+                0
+            );
+            validatorIdByPubkey[_pubkey[i]] = nextValidatorId;
+            validatorIdsByOperatorId[operatorId].push(nextValidatorId);
+            emit AddedValidatorKey(msg.sender, _pubkey[i], nextValidatorId);
+```
+# [G-04]  State variables  should be cached in stack variables rather than re-reading them from storage.
+If reading of state variables is happening more than once inside function than it must be cached in stack variables so 100 Gas of Gwarmaccess can be save every time a state variables read after first time.
+
+## PermissionedNodeRegistry.sol.addValidatorKeys() : state variable *nextValidatorId* should be cached into stack varaible insted of re-reding from storage 7 times (saves 600 Gas)
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L161](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L161)
+```solidity
+          address withdrawVault = IVaultFactory(vaultFactory).deployWithdrawVault(
+                POOL_ID,
+                operatorId,
+                operatorTotalKeys + i, //operator totalKeys
+   161:             nextValidatorId
+            );
+   163:        validatorRegistry[nextValidatorId] = Validator(
+                ValidatorStatus.INITIALIZED,
+                _pubkey[i],
+                _preDepositSignature[i],
+                _depositSignature[i],
+                withdrawVault,
+                operatorId,
+                0,
+                0
+            );
+   173:      validatorIdByPubkey[_pubkey[i]] = nextValidatorId;
+   174:      validatorIdsByOperatorId[operatorId].push(nextValidatorId);
+   175:      emit AddedValidatorKey(msg.sender, _pubkey[i], nextValidatorId);
+   176:      nextValidatorId++;
 ```
