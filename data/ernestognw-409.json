@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "ernestognw",
+  "risk": "2",
+  "title": "Math rounding in StaderStakePoolsManager.sol is not ERC4626-compliant: previewWithdraw should round up.",
+  "issueId": 409,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/409"
+}
