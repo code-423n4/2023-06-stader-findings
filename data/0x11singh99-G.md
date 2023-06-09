@@ -108,11 +108,88 @@ If reading of state variables is happening more than once inside function than i
 
  223:    uint256 totalOperators = nextOperatorId - 1;//@audit -gas
 ```
-## PermissionedNodeRegistry.sol.allocateValidatorsAndUpdateOperatorId() : state variable *operatorIdForExcessDeposit* should be cached into stack varaible insted of re-reding from storage no. of iterations of do-while loop (100*n - 100 Gas of Gwarmaccess, n is the do-while loop iterations) 
+## PermissionedNodeRegistry.sol.allocateValidatorsAndUpdateOperatorId() : state variable *operatorIdForExcessDeposit* should be cached into stack varaible insted of re-reding from storage no. of iterations times of do-while loop (saves 100*n - 100 Gas of Gwarmaccess, n is the do-while loop iterations) 
 [https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L241](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L241)
 ```solidity
 241:         } while (i != operatorIdForExcessDeposit); //audit gas  cache it rather than re-reading same state variable
 ```
+## PermissionedNodeRegistry.sol.onboardNodeOperator() : state variable *staderConfig* should be cached into stack varaible (using IStaderConfig _staderConfig = staderConfig ) insted of re-reding from storage 3 times  (saves 200 Gas of Gwarmaccess) 
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L112](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L112)
+```solidity
+       //@audit gas cache staderConfig instance using IStaderConfig _staderConfig = staderConfig
+ 112:   address poolUtils = staderConfig.getPoolUtils();
+ 113:    if (IPoolUtils(poolUtils).poolAddressById(POOL_ID) != staderConfig.getPermissionedPool()) {
+            revert DuplicatePoolIDOrPoolNotAdded();
+        }
+       ...
+ 128:     feeRecipientAddress = staderConfig.getPermissionedSocializingPool();
+```
+## PermissionedNodeRegistry.sol.addValidatorKeys() : state variable *staderConfig* should be cached into stack varaible (using IStaderConfig _staderConfig = staderConfig ) insted of re-reding from storage 2 times  (saves 100 Gas of Gwarmaccess) 
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L153](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L153)
+```solidity
+          //@audit gas, cache staderConfig instance using IStaderConfig _staderConfig = staderConfig
+  153:    address vaultFactory = staderConfig.getVaultFactory();
+  154:    address poolUtils = staderConfig.getPoolUtils();
+```
+## PermissionedNodeRegistry.sol.allocateValidatorsAndUpdateOperatorId() : state variable *staderConfig* should be cached into stack varaible (using IStaderConfig _staderConfig = staderConfig ) insted of re-reding from storage 2 times  (saves 100 Gas of Gwarmaccess) 
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L197](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L197)
+```solidity
+          //@audit gas, cache staderConfig instance using IStaderConfig _staderConfig = staderConfig
+ 197:   UtilLib.onlyStaderContract(msg.sender, staderConfig, staderConfig.PERMISSIONED_POOL());
+```
+## PermissionedNodeRegistry.sol.markValidatorReadyToDeposit() : state variable *staderConfig* should be cached into stack varaible (using IStaderConfig _staderConfig = staderConfig ) insted of re-reding from storage 2 times  (saves 100 Gas of Gwarmaccess) 
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L259](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L259)
+```solidity
+          //@audit gas, cache staderConfig instance using IStaderConfig _staderConfig = staderConfig
+ 259:   UtilLib.onlyOperatorRole(msg.sender, staderConfig);
+         ...
+
+ 297:   address permissionedPool = staderConfig.getPermissionedPool();
+ 
+```
+## PermissionedNodeRegistry.sol.updateQueuedValidatorIndex() : state variable *staderConfig* should be cached into stack varaible (using IStaderConfig _staderConfig = staderConfig ) insted of re-reding from storage 2 times  (saves 100 Gas of Gwarmaccess) 
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L366](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L366)
+```solidity
+          //@audit gas, cache staderConfig instance using IStaderConfig _staderConfig = staderConfig
+ 366:   UtilLib.onlyStaderContract(msg.sender, staderConfig, staderConfig.PERMISSIONED_POOL());
+```
+## PermissionedNodeRegistry.sol.updateDepositStatusAndBlock() : state variable *staderConfig* should be cached into stack varaible (using IStaderConfig _staderConfig = staderConfig ) insted of re-reding from storage 2 times  (saves 100 Gas of Gwarmaccess) 
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L377](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L377)
+```solidity
+          //@audit gas, cache staderConfig instance using IStaderConfig _staderConfig = staderConfig
+ 377:    UtilLib.onlyStaderContract(msg.sender, staderConfig, staderConfig.PERMISSIONED_POOL());
+        validatorRegistry[_validatorId].depositBlock = block.number;
+```
+## PermissionedNodeRegistry.sol.markValidatorStatusAsPreDeposit() : state variable *staderConfig* should be cached into stack varaible (using IStaderConfig _staderConfig = staderConfig ) insted of re-reding from storage 2 times  (saves 100 Gas of Gwarmaccess) 
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L389](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L389)
+```solidity
+          //@audit gas, cache staderConfig instance using IStaderConfig _staderConfig = staderConfig
+ 389:    UtilLib.onlyStaderContract(msg.sender, staderConfig, staderConfig.PERMISSIONED_POOL());
+```
+## PermissionedNodeRegistry.sol.increaseTotalActiveValidatorCount() : state variable *staderConfig* should be cached into stack varaible (using IStaderConfig _staderConfig = staderConfig ) insted of re-reding from storage 2 times  (saves 100 Gas of Gwarmaccess) 
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L476](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L476)
+```solidity
+          //@audit gas, cache staderConfig instance using IStaderConfig _staderConfig = staderConfig
+ 476:    UtilLib.onlyStaderContract(msg.sender, staderConfig, staderConfig.PERMISSIONED_POOL());
+```
+
+### Like above staderConfig state variables repeated instances inside functions are present in many files(can be found easily like we find from PermissionedNodeRegistry.sol above) and can be saved gas from them is use same caching as above ,cache staderConfig instance using IStaderConfig _staderConfig = staderConfig
+
+
+
+## PermissionedNodeRegistry.sol.withdrawnValidators() : state variable *staderConfig* should be cached into stack varaible (using IStaderConfig _staderConfig = staderConfig ) insted of re-reding from storage 3 times  (saves 200 Gas of Gwarmaccess) 
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L312](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L312)
+```solidity
+          //@audit gas, cache state var. staderConfig instance using IStaderConfig _staderConfig = staderConfig
+  312:      UtilLib.onlyStaderContract(msg.sender, staderConfig, staderConfig.STADER_ORACLE());
+          uint256 withdrawnValidatorCount = _pubkeys.length;
+              //@audit gas
+  314:    if (withdrawnValidatorCount > staderConfig.getWithdrawnKeyBatchSize()) {
+            revert TooManyWithdrawnKeysReported();
+        }
+```
+
+
 ## PermissionLessNodeRegistry.sol.onboardNodeOperator() : state variable *nextOperatorId* should be cached into stack varaible insted of re-reding from storage 2 times (saves 100 Gas of 2nd Gwarmaccess)
 [https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L108](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L108)
 ```solidity
