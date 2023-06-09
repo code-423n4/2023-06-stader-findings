@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "MohammedRizwan",
+  "risk": "2",
+  "title": "Chainlink's latestRoundData might return stale or incorrect results",
+  "issueId": 416,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/416"
+}
