@@ -1,26 +1,5 @@
-1. PoolIdArray in PoolUtils only allows a max of uint8 (256 pools)
 
-```solidity
-uint8[] public override poolIdArray;
-```
-
-2. getPoolIdArray gets the entire list which is sub-optimal. Provide access each element instead.
-```solidity
-    function getPoolIdArray() external view override returns (uint8[] memory) {
-        return poolIdArray;
-    }
-```
-
-3. onlyValidKeys can take 1 bytes and slice accordingly instead of 3 bytes.
-```solidity
-function onlyValidKeys(
-        bytes calldata _pubkey,
-        bytes calldata _preDepositSignature,
-        bytes calldata _depositSignature
-    )
-```
-
-4. calculation of operatorShare can be skipped if collateralETH is 0 (for permissionedPool)
+1. calculation of operatorShare can be skipped if collateralETH is 0 (for permissionedPool)
 ```solidity
         uint256 TOTAL_STAKED_ETH = staderConfig.getStakedEthPerNode();
         uint256 collateralETH = getCollateralETH(_poolId);
@@ -38,7 +17,7 @@ function onlyValidKeys(
         userShare = _totalRewards - protocolShare - operatorShare;
 ```
 
-5. onlyExistingPoolId iterates the list to find the existingPool which is very gas intensive. Use openzeppelin EnumerableSet to reduce gas
+2. onlyExistingPoolId iterates the list to find the existingPool which is very gas intensive. Use openzeppelin EnumerableSet to reduce gas
 ```solidity
     function getQueuedValidatorCountByPool(uint8 _poolId)
         external
@@ -75,7 +54,7 @@ function onlyValidKeys(
     }
 ```
 
-6. extractNonBidSD should use safeTransfer instead of transfer 
+3. extractNonBidSD should use safeTransfer instead of transfer for consistency
 ```solidity
     function extractNonBidSD(uint256 lotId) external override {
         LotItem storage lotItem = lots[lotId];
@@ -92,7 +71,7 @@ function onlyValidKeys(
     }
 ```
 
-7. OperatorRewardsController.claim of 0 should either be prohibited or short-circuited from sendValue
+4. OperatorRewardsController.claim of 0 should either be prohibited or short-circuited from sendValue to avoid unnecessary call.
 ```solidity
     function claim() external whenNotPaused {
         address operator = msg.sender;
@@ -105,23 +84,14 @@ function onlyValidKeys(
     }
 ```
 
-8. lack of function to remove node operator from permissionList on PermissionedNodeRegistry
+5. lack of function to remove node operator from permissionList on PermissionedNodeRegistry
 
 ``solidity
     // mapping of whitelisted permissioned node operator
     mapping(address => bool) public override permissionList;
 ```
 
-9. three variables in addValidatorKeys can be bundled into a struct 
-```solidity
-function addValidatorKeys(
-        bytes[] calldata _pubkey,
-        bytes[] calldata _preDepositSignature,
-        bytes[] calldata _depositSignature
-    ) 
-```
-
-10. user can only specify a full ETH as expectedAmount, but sometimes they might want to specify a decimal amount but now is not working since minEThRequiredToFinalizeRequest is dividing by 10 ** 18
+7. user can only specify a full ETH as expectedAmount, but sometimes they might want to specify a decimal amount but now is not working since minEThRequiredToFinalizeRequest is dividing by 10 ** 18
 ```solidity
             UserWithdrawInfo memory userWithdrawInfo = userWithdrawRequests[requestId];
             uint256 requiredEth = userWithdrawInfo.ethExpected;
@@ -129,7 +99,7 @@ function addValidatorKeys(
             uint256 minEThRequiredToFinalizeRequest = Math.min(requiredEth, (lockedEthX * exchangeRate) / DECIMALS);
 ```
 
-11. add a way to sunset the allowance of a auctionContract on SD Collateral by setting its allowance to 0. Right now the maxApproveSD function would set allowance for auctionContract to `type(uint256).max`. But if a new auctionContract is updated, the allowance of the old auctionContract cannot be revoked.
+8. add a way to sunset the allowance of a auctionContract on SD Collateral by setting its allowance to 0. Right now the maxApproveSD function would set allowance for auctionContract to `type(uint256).max`. But if a new auctionContract is updated, the allowance of the old auctionContract cannot be revoked.
 
 ```solidity
     /// @notice for max approval to auction contract for spending SD tokens
@@ -141,7 +111,7 @@ function addValidatorKeys(
     }
 ```
 
-12. enableSafeMode and disableSafeMode in StaderOracle does not check if the safeMode is already enabled or disabled like all other functions
+9. enableSafeMode and disableSafeMode in StaderOracle does not check if the safeMode is already enabled or disabled. This is different from all other functions which has this input validation.
 
 ```solidity
     function enableSafeMode() external override {
