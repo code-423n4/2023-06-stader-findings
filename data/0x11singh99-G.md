@@ -5,9 +5,7 @@ Memory variables should be cached to stack variables if re-reading happening of 
 ```solidity
 File : contracts/PermissionedNodeRegistry.sol
 
-                //@audit-issue gas optimization if used stack over memory variable for each iteration
-               
-       
+                //@audit-issue gas optimization if used stack over memory variable for each iteration     
        210:      remainingOperatorCapacity[i] = getOperatorQueuedValidatorCount(i);
        211:      selectedOperatorCapacity[i] = Math.min(remainingOperatorCapacity[i], validatorPerOperator);
                 //@audit gas
@@ -91,6 +89,27 @@ File : contracts/PermissionedNodeRegistry.sol
             validatorIdsByOperatorId[operatorId].push(nextValidatorId);
             emit AddedValidatorKey(msg.sender, _pubkey[i], nextValidatorId);
 ```
+## PermissionedNodeRegistry.sol.markValidatorReadyToDeposit() : inside loop for each  *i*  value  _frontRunPubkey[i] should be cached to stack variables (saves 25 gas on each iteration)
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L273](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L273)
+```solidity
+272:   for (uint256 i; i < frontRunValidatorsLength; ) {
+273:           uint256 validatorId = validatorIdByPubkey[_frontRunPubkey[i]];
+          ...
+278:         emit ValidatorMarkedAsFrontRunned(_frontRunPubkey[i], validatorId); //@audit-gas _frontRunPubkey[i] can be cached 
+             ... }
+```
+## PermissionedNodeRegistry.sol.markValidatorReadyToDeposit() : inside loop for each  *i*  value  _invalidSignaturePubkey[i] should be cached to stack variables (saves 25 gas on each iteration)
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L273](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L273)
+```solidity
+285:    for (uint256 i; i < invalidSignatureValidatorsLength; ) {
+286:       uint256 validatorId = validatorIdByPubkey[_invalidSignaturePubkey[i]];
+           ...
+
+291:       emit ValidatorStatusMarkedAsInvalidSignature(_invalidSignaturePubkey[i], validatorId);
+           ...
+        }
+```
+
 # [G-04]  State variables  should be cached in stack variables rather than re-reading them from storage.
 If reading of state variables is happening more than once inside function than it must be cached in stack variables so 100 Gas of Gwarmaccess can be save every time a state variables read after first time.
 
