@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "trustOne",
+  "risk": "2",
+  "title": " A trusted node has the ability to submit the `ExchangeRate` multiple times for a single `reportingBlockNumber`.",
+  "issueId": 420,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/420"
+}
