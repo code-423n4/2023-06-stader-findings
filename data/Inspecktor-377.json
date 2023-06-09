@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Inspecktor",
+  "risk": "2",
+  "title": "There is no check to see if eth was successfully sent from PermissionlessNodeRegistry to StaderInsuranceFund.",
+  "issueId": 377,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/377"
+}
