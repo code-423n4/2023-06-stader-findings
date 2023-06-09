@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "turvy_fuzz",
+  "risk": "2",
+  "title": "There is still a transfer of eth even when contract is paused, due to missing whenNotPaused modifier",
+  "issueId": 407,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/407"
+}
