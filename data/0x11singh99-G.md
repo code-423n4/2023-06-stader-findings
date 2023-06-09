@@ -118,3 +118,32 @@ If reading of state variables is happening more than once inside function than i
    175:      emit AddedValidatorKey(msg.sender, _pubkey[i], nextValidatorId);
    176:      nextValidatorId++;
 ```
+
+## PermissionedNodeRegistry.sol.allocateValidatorsAndUpdateOperatorId() : state variable *nextOperatorId* should be cached into stack varaible insted of re-reding from storage 3 times + no. of iterations of for loop (saves 200 + 100*n Gas of Gwarmaccess, n is the for loop iterations) 
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L199](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L199)
+```solidity
+ 199:    selectedOperatorCapacity = new uint256[](nextOperatorId);//@audit -gas
+         uint256 validatorPerOperator = _numValidators / totalActiveOperatorCount;
+ 202:    uint256[] memory remainingOperatorCapacity = new uint256[](nextOperatorId);//@audit -gas
+         uint256 totalValidatorToDeposit;
+         bool validatorPerOperatorGreaterThanZero = (validatorPerOperator > 0);
+         if (validatorPerOperatorGreaterThanZero) {
+                         //@audit -gas
+ 206:        for (uint256 i = 1; i < nextOperatorId; ) {
+                if (!operatorStructById[i].active) {
+                    continue;
+                }
+             ... 
+
+ 223:    uint256 totalOperators = nextOperatorId - 1;//@audit -gas
+```
+## PermissionedNodeRegistry.sol.allocateValidatorsAndUpdateOperatorId() : state variable *operatorIdForExcessDeposit* should be cached into stack varaible insted of re-reding from storage no. of iterations of do-while loop (100*n - 100 Gas of Gwarmaccess, n is the do-while loop iterations) 
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L241](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L241)
+```solidity
+241:         } while (i != operatorIdForExcessDeposit); //audit gas  cache it rather than re-reading same state variable
+```
+
+# [G-05]  Make instance into stack variable instead of re-creating every time calling external contract function (save 30 gas each time )
+
+In most files this pattern is not followed, this should be followed.
+
