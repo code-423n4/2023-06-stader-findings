@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "NoamYakov",
+  "risk": "3",
+  "title": "`VaultFactory.computeWithdrawVaultAddress()` and `VaultFactory.computeNodeELRewardVaultAddress()` return wrong addresses if `VaultFactory.vaultProxyImplementation` has been updated",
+  "issueId": 391,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/391"
+}
