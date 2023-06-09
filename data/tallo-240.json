@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "tallo",
+  "risk": "3",
+  "title": "Individual nodes can manipluate ```sdPriceInETH``` to be any value inside ```StaderOracle#submitSDPrice```",
+  "issueId": 240,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/240"
+}
