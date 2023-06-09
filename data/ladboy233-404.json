@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "ladboy233",
+  "risk": "3",
+  "title": "The incorrect check implemented in the UserWithdrawalManager undermines the effectiveness of the timelock for claiming ETH",
+  "issueId": 404,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/404"
+}
