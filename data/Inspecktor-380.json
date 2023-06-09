@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Inspecktor",
+  "risk": "2",
+  "title": "Tokens can be lost when trying to deposit in SDCaollateral.depositSDAsCollateral() or trying to withdraw SDCaollateral.withdraw()",
+  "issueId": 380,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/380"
+}
