@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "twcctop",
+  "risk": "2",
+  "title": " Action.sol# createLot  ,parameter   `_sdAmount`   can set to zero , many  zero profit auctions can be created. ",
+  "issueId": 284,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/284"
+}
