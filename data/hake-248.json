@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "hake",
+  "risk": "2",
+  "title": "Some might be able to deposit but not withdraw from `SDCollateral`.",
+  "issueId": 248,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/248"
+}
