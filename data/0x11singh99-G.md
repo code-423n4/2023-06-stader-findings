@@ -8,13 +8,13 @@ File : contracts/PermissionedNodeRegistry.sol
                 //@audit-issue gas optimization if used stack over memory variable for each iteration
                
        
-                remainingOperatorCapacity[i] = getOperatorQueuedValidatorCount(i);
-                selectedOperatorCapacity[i] = Math.min(remainingOperatorCapacity[i], validatorPerOperator);
+       210:      remainingOperatorCapacity[i] = getOperatorQueuedValidatorCount(i);
+       211:      selectedOperatorCapacity[i] = Math.min(remainingOperatorCapacity[i], validatorPerOperator);
                 //@audit gas
-                totalValidatorToDeposit += selectedOperatorCapacity[i];
+       212:      totalValidatorToDeposit += selectedOperatorCapacity[i];
                 //@audit gas
-                remainingOperatorCapacity[i] -= selectedOperatorCapacity[i]; //for each opertaror loop is running
-                unchecked {
+       213:      remainingOperatorCapacity[i] -= selectedOperatorCapacity[i];
+       214:      unchecked {
                     ++i;
                 }
         
@@ -39,4 +39,5 @@ Take 2 variables for caching from memory
                 }
                 remainingOperatorCapacity[i] = a;
                 selectedOperatorCapacity[i] = b;
+
 ```
