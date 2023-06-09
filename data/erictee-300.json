@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "erictee",
+  "risk": "2",
+  "title": "Compromised or malicious manager can freeze users' SD tokens in SDCollateral.sol.",
+  "issueId": 300,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/300"
+}
