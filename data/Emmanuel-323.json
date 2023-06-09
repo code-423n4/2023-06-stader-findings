@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Emmanuel",
+  "risk": "3",
+  "title": "Node Operators can `addValidatorKeys` with an invalid `_depositSignature`, which would lead to loss of users' funds.",
+  "issueId": 323,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/323"
+}
