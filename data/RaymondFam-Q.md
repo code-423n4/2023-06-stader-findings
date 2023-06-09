@@ -77,3 +77,92 @@ https://github.com/code-423n4/2023-06-stader/blob/main/contracts/StaderOracle.so
         }
 ```
 Contract operators should be aware of potential delays caused by blockchain congestion or other factors. They should closely monitor the reporting block numbers and strive to meet the update frequencies to avoid data becoming stale. If frequent delays are encountered, it may be necessary to adjust the chosen update frequencies to better align with the blockchain's performance and ensure timely and accurate data updates.
+
+## Comments and Code Mismatch
+The withdraw function in the SDCollateral contract lacks the implementation of a withdrawal delay, as indicated in the function's NatSpec documentation. This omission contradicts the intended behavior specified in the documentation, potentially leading to inconsistencies and unintended consequences in the withdrawal process.
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/SDCollateral.sol#L54-L73
+
+```solidity
+    /// @notice for operator to request withdraw of sd
+    /// @dev it does not transfer sd tokens immediately
+    /// operator should come back after withdrawal-delay time to claim
+    /// this requested sd is subject to slashes
+    function withdraw(uint256 _requestedSD) external override {
+        address operator = msg.sender;
+        uint256 opSDBalance = operatorSDBalance[operator];
+
+        if (opSDBalance < getOperatorWithdrawThreshold(operator) + _requestedSD) {
+            revert InsufficientSDToWithdraw(opSDBalance);
+        }
+        operatorSDBalance[operator] -= _requestedSD;
+
+        // cannot use safeERC20 as this contract is an upgradeable contract
+        if (!IERC20(staderConfig.getStaderToken()).transfer(payable(operator), _requestedSD)) {
+            revert SDTransferFailed();
+        }
+
+        emit SDWithdrawn(operator, _requestedSD);
+    }
+```
+It is recommended to address this discrepancy by implementing the appropriate withdrawal delay mechanism in the withdraw function. By adhering to the intended withdrawal delay, operators can claim their requested SD tokens only after the specified time period, ensuring the proper functioning of the collateral slashing mechanism and maintaining the expected behavior of the contract.
+
+## Identical Code Logic
+In ValidatorWithdrawalVault.sol, functions `distributeRewards` and `settleFunds` have the following identical code snippet:
+
+https://github.com/code-423n4/2023-06-stader/blob/main/contracts/ValidatorWithdrawalVault.sol#L31-L33
+https://github.com/code-423n4/2023-06-stader/blob/main/contracts/ValidatorWithdrawalVault.sol#L55-L57
+
+```solidity
+        uint8 poolId = VaultProxy(payable(address(this))).poolId();
+        uint256 validatorId = VaultProxy(payable(address(this))).id();
+        IStaderConfig staderConfig = VaultProxy(payable(address(this))).staderConfig();
+```
+It is recommended to refactor the duplicate code snippet by grouping it into a private function. This will improve code maintainability and reduce redundancy. By extracting the common code snippet into a separate function, you can avoid duplicating the same code and make future updates or modifications easier.
+
+## Missing Length Check in claim Function
+The [`claim`](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/SocializingPool.sol#L107-L135) function in the SocializingPool contract should include a length check for the input parameters `_index`, `_amountSD`, `_amountETH`, and `_merkleProof` before invoking the [`_claim`](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/SocializingPool.sol#L137-L161) internal function. This check ensures that all arrays have the same length, preventing potential errors or inconsistencies during the reward claiming process.
+
+By verifying the lengths of these arrays, you can ensure that the corresponding values align properly and avoid any unexpected behavior or unintended consequences. Adding this length check will help maintain the integrity of the claim operation and enhance the overall robustness of the contract.
+
+Consider adding the following length check at the beginning of the claim function:
+
+```solidity
+require(
+    _index.length == _amountSD.length &&
+    _index.length == _amountETH.length &&
+    _index.length == _merkleProof.length,
+    "Input lengths mismatch"
+);
+```
+## Unnecessary payable Keyword in withdraw Function
+The `payable` keyword in the line `if (!IERC20(staderConfig.getStaderToken()).transfer(payable(operator), _requestedSD))` of the `withdraw` function in the `SDCollateral` contract is unnecessary and can be safely removed.
+
+Since you're not dealing with the transfer of native tokens (ETH) in this specific line, using the `payable` keyword is not required. The `payable` keyword is typically used when transferring ETH or performing operations related to ETH transfers.
+
+You can simplify the line to:
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/SDCollateral.sol#LL68C1-L68C96
+
+```diff
+-        if (!IERC20(staderConfig.getStaderToken()).transfer(payable(operator), _requestedSD)) {
++        if (!IERC20(staderConfig.getStaderToken()).transfer(operator, _requestedSD)) {
+```
+By removing the `payable` keyword, you ensure clarity and eliminate any confusion regarding the transfer of native tokens, making the code more concise and accurate.
+
+## Removal of Unused receive and fallback Functions
+The `receive` and `fallback` functions in the contract `PermissionedPool` can be safely removed as they serve as protection against accidental submissions by calling non-existent functions. By removing these functions, direct transfers of Ether to the contract will be disallowed, achieving the same outcome as having the functions present with the reverting logic.
+
+https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedPool.sol#L51-L59
+
+```solidity
+    // protection against accidental submissions by calling non-existent function
+    receive() external payable {
+        revert UnsupportedOperation();
+    }
+
+    // protection against accidental submissions by calling non-existent function
+    fallback() external payable {
+        revert UnsupportedOperation();
+    }
+```
