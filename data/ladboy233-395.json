@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "ladboy233",
+  "risk": "2",
+  "title": "The utilization of a hardcoded time value is incorrect when deployed to blockchains other than Ethereum",
+  "issueId": 395,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/395"
+}
