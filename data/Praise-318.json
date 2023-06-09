@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Praise",
+  "risk": "3",
+  "title": "Manager and DEFAULT_ADMIN_ROLE can create a scenario where user deposits more than he can withdraw",
+  "issueId": 318,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/318"
+}
