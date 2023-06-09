@@ -11,14 +11,14 @@ All the gas optimizations are determined based opcodes and sample tests.
 | [G-5]   | Refactor the for loop to avoid unwanted variable creation inside the loop   | 1   | 13   |
 | [G-6]   | Cache the state variable out side the loop  | 1  | PerCall (100 gas)   |
 | [G-7]   | Caching global variables is more expensive than using the actual variable (use msg.sender instead of caching it)   | 3   | 39   |
-
+| [G-8]   | Repack the state variable to avoid on extra slot    | 1   | 2000   |
 
 
 ##
 
 ## [G-1] Using bools for storage incurs overhead
 
-### All instances are not in bot findings 
+### All instances are not found by bot race
 
 Results : ``INSTANCES 7``, Saves ``119700 GAS`` 
 
@@ -68,7 +68,7 @@ FILE: 2023-06-stader/contracts/VaultProxy.sol
 
 ## [G-2] Using storage instead of memory for structs/arrays saves gas
 
-### All instances are not in bot findings 
+### All instances are not found by bot race
 
 Results : ``INSTANCES 3``, Saves ``8400 GAS`` 
 
@@ -326,31 +326,34 @@ FILE: Breadcrumbs2023-06-stader/contracts/SocializingPool.sol
 + 116:        address operatorRewardsAddr = UtilLib.getOperatorRewardAddress(msg.sender, staderConfig);
 
 ```
+##
 
+## [G-8] Repack the state variable to avoid on extra slot 
 
-[G‑01]	Reduce gas usage by moving to Solidity 0.8.19 or later	47	-
-[G‑02]	Avoid updating storage when the value hasn't changed	21	16800
-[G‑03]	Remove or replace unused state variables	1	-
-[G‑04]	Multiple address/ID mappings can be combined into a single mapping of an address/ID to a struct, where appropriate	2	-
-[G‑05]	State variables can be packed into fewer storage slots	2	-
-[G‑06]	Structs can be packed into fewer storage slots	2	-
-[G‑07]	Using storage instead of memory for structs/arrays saves gas	1	4200
-[G‑08]	State variables should be cached in stack variables rather than re-reading them from storage	181	17557
-[G‑09]	Multiple accesses of a mapping/array should use a local variable cache	18	756
-[G‑10]	The result of function calls should be cached rather than re-calling the function	12	-
-[G‑11]	<x> += <y> costs more gas than <x> = <x> + <y> for state variables	12	1356
-[G‑12]	internal functions only called once can be inlined to save gas	32	640
-[G‑13]	Add unchecked {} for subtractions where the operands cannot underflow because of a previous require() or if-statement	1	85
-[G‑14]	++i/i++ should be unchecked{++i}/unchecked{i++} when it is not possible for them to overflow, as is the case when used in for- and while-loops	16	960
-[G‑15]	Optimize names to save gas	38	836
-[G‑16]	Using bools for storage incurs overhead	5	85500
-[G‑17]	>= costs less gas than >	7	21
-[G‑18]	++i costs less gas than i++, especially when it's used in for-loops (--i/i-- too)	36	180
-[G‑19]	Usage of uints/ints smaller than 32 bytes (256 bits) incurs overhead	6	-
-[G‑20]	Using private rather than public for constants, saves gas	35	-
-[G‑21]	Don't use SafeMath once the solidity version is 0.8.0 or greater	2	-
-[G‑22]	Division by two should use bit shifting	6	120
-[G‑23]	Superfluous event fields	13	-
-[G‑24]	Functions guaranteed to revert when called by normal users can be marked payable	71	1491
-[G‑25]	Constructors can be marked payable	21	441
-[G‑26]	Not using the named return variables anywhere in the function is confusing	7	-
+Results : ``INSTANCES 1``, Saves ``2000 GAS `` 
+
+If variables occupying the same slot are both written the same function or by the constructor, avoids a separate Gsset (20000 gas). Reads of the variables can also be cheaper
+
+[_erChangeLimit > ER_CHANGE_MAX_BPS](https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/StaderOracle.sol#L532) as per this condition check the ``erChangeLimit`` not exceeds ``10000``. So ``uint64`` alone more than enough instead of uint256
+ 
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/StaderOracle.sol#L18-L28
+
+### Saves 1 slot and 2000 gas 
+
+```diff
+FILE: 2023-06-stader/contracts/StaderOracle.sol
+
+18:    bool public override erInspectionMode;
+19:    bool public override isPORFeedBasedERData;
+20:    SDPriceData public lastReportedSDPriceData;
++ 28:    uint64 public override erChangeLimit;
+21:    IStaderConfig public override staderConfig;
+22:    ExchangeRate public inspectionModeExchangeRate;
+23:    ExchangeRate public exchangeRate;
+24:    ValidatorStats public validatorStats;
+25:
+26:    uint256 public constant MAX_ER_UPDATE_FREQUENCY = 7200 * 7; // 7 days
+27:    uint256 public constant ER_CHANGE_MAX_BPS = 10000;
+- 28:    uint256 public override erChangeLimit;
+
+```
