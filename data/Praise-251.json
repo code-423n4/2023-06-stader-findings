@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Praise",
+  "risk": "2",
+  "title": "totalRewards can be a value > than staderConfig.getRewardsThreshold() in ValidatorWithdrawalVault.distributeRewards().",
+  "issueId": 251,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/251"
+}
