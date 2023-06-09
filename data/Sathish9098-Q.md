@@ -38,7 +38,6 @@ https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c0
 
 Use OpenZeppelin’s Address.sendValue()
 
-
 ##
 
 ## [L-2] Use .call instead of .transfer to send ether
@@ -119,7 +118,6 @@ Note: The payable fallback function is defined here.
    |     ^ (Relevant source part starts here and spans across multiple lines).
 
 ```
-
 ##
 
 ## [L-6] Consider using upgradable ERC20 contracts 
@@ -132,17 +130,283 @@ https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c0
 
 https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/SocializingPool.sol#L15
 
+##
+
+## [L-7] nextValidatorId inrement should be placed on top of the for loop
+
+When increase bottom of the for loop nextValidatorId is increased even next iteration condition check is false.
+
+```solidity
+FILE: 2023-06-stader/contracts/PermissionedNodeRegistry.sol
+
+173:  validatorIdByPubkey[_pubkey[i]] = nextValidatorId;
+174:            validatorIdsByOperatorId[operatorId].push(nextValidatorId);
+175:            emit AddedValidatorKey(msg.sender, _pubkey[i], nextValidatorId);
+176:            nextValidatorId++;
+177:            unchecked {
+178:                ++i;
+179:            }
+
+```
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L173-L179
+
+Recommended Mitigation:
+nextValidatorId value should be increased when enter to new iterations 
+
+##
+
+## [L-8] Missing Event for initialize
+
+Description: Events help non-contract tools to track changes, and events prevent users from being surprised by changes Issuing event-emit during initialization is a detail that many projects skip
+
+
+```solidity
+FILE: 2023-06-stader/contracts/PoolSelector.sol
+
+function initialize(address _admin, address _staderConfig) external initializer {
+        UtilLib.checkNonZeroAddress(_admin);
+        UtilLib.checkNonZeroAddress(_staderConfig);
+        __AccessControl_init_unchained();
+        poolAllocationMaxSize = 50;
+        staderConfig = IStaderConfig(_staderConfig);
+        _grantRole(DEFAULT_ADMIN_ROLE, _admin);
+    }
+
+```
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PoolSelector.sol#L36-L43
+
+```solidity
+FILE: Breadcrumbs2023-06-stader/contracts/VaultProxy.sol
+
+function initialise(
+        bool _isValidatorWithdrawalVault,
+        uint8 _poolId,
+        uint256 _id,
+        address _staderConfig
+    ) external {
+        if (isInitialized) {
+            revert AlreadyInitialized();
+        }
+        UtilLib.checkNonZeroAddress(_staderConfig);
+        isValidatorWithdrawalVault = _isValidatorWithdrawalVault;
+        isInitialized = true;
+        poolId = _poolId;
+        id = _id;
+        staderConfig = IStaderConfig(_staderConfig);
+        owner = staderConfig.getAdmin();
+    }
+
+
+```
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/VaultProxy.sol#LL20C5-L36C6
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/factory/VaultFactory.sol#L23-L32
+
+Recommendation: Add Event-Emit
+
+##
+
+
+# NON CRITICAL
+
+## [NC-1] Tokens accidentally sent to the contract cannot be recovered
+
+### Context
+contracts/staking/NeoTokyoStaker.sol:
+
+It can’t be recovered if the tokens accidentally arrive at the contract address, which has happened to many popular projects, so I recommend adding a recovery code to your critical contracts.
+
+### Recommended Mitigation Steps
+Add this code:
+
+ /**
+  * @notice Sends ERC20 tokens trapped in contract to external address
+  * @dev Onlyowner is allowed to make this function call
+  * @param account is the receiving address
+  * @param externalToken is the token being sent
+  * @param amount is the quantity being sent
+  * @return boolean value indicating whether the operation succeeded.
+  *
+ */
+  function rescueERC20(address account, address externalToken, uint256 amount) public onlyOwner returns (bool) {
+    IERC20(externalToken).transfer(account, amount);
+    return true;
+  }
+}
+
+## [NC-2] Use SMTChecker
+
+The highest tier of smart contract behavior assurance is formal mathematical verification. All assertions that are made are guaranteed to be true across all inputs → The quality of your asserts is the quality of your verification.
+
+https://twitter.com/0xOwenThurm/status/1614359896350425088?t=dbG9gHFigBX85Rv29lOjIQ&s=19
+
+##
+
+[NC-3] According to the syntax rules, use => mapping ( instead of => mapping( using spaces as keyword
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PoolSelector.sol#L23
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/StaderOracle.sol#L44-L47
+
+
+##
+
+## [NC-4] Assembly Codes Specific – Should Have Comments
+
+Since this is a low level language that is more difficult to parse by readers, include extensive documentation, comments on the rationale behind its use, clearly explaining what each assembly instruction does.
+
+This will make it easier for users to trust the code, for reviewers to validate the code, and for developers to build on or update the code.
+
+Note that using Assembly removes several important security features of Solidity, which can make the code more insecure and more error-prone.
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#L511-L513
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#L581-L583
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L605-L607
+
+
+##
+
+## [NC-5] NOT USING THE NAMED RETURN VARIABLES ANYWHERE IN THE FUNCTION IS CONFUSING
+
+Consider changing the variable to be an unnamed one
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PoolSelector.sol#L76-L79
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PoolSelector.sol#L50-L54
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L720
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L513
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L680
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#L93
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#L432
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L692
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#L648
+
+##
+
+## [NC-6] NATSPEC COMMENTS SHOULD BE INCREASED IN CONTRACTS
+
+It is recommended that Solidity contracts are fully annotated using NatSpec for all public interfaces (everything in the ABI). It is clearly stated in the Solidity official documentation.
+In complex projects such as Defi, the interpretation of all functions and their arguments and returns is important for code readability and auditability.
+(https://docs.soliditylang.org/en/v0.8.15/natspec-format.html)
+
+### Recommendation
+NatSpec comments should be increased in Contracts
+
+
+##
+
+## [NC-7] Use a more recent version of solidity
+
+Use at least solidity version 0.8.17 
+
+INSTANCE
+ALL CONTRACTS
+
+##
+
+## [NC-8] For functions, follow Solidity standard naming conventions (internal function style rule)
+
+Description
+The bellow codes don’t follow Solidity’s standard naming convention,
+
+internal and private functions and variables : the mixedCase format starting with an underscore (_mixedCase starting with an underscore)
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L680
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L687-L692
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L720
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L732
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L738
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L747
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L752
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedNodeRegistry.sol#L758
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedPool.sol#L279
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedPool.sol#L283
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedPool.sol#L288-L293
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#L598-L602
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#L618
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#L625
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#L633
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessNodeRegistry.sol#L643-L648
+
+##
+
+## [NC-9] Critical changes should use two-step procedure
+
+Lack of two-step procedure for critical operations leaves them error-prone. Consider adding two-step procedure on the critical functions.
+
+Consider adding a two-steps pattern on critical changes to avoid mistakenly transferring ownership of roles or critical functionalities to the wrong address
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedPool.sol#L236-L245
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessPool.sol#L66-L75
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PoolSelector.sol#L147-L151
+
+##
+
+## [NC-10] add a timelock to critical functions
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionedPool.sol#L236-L245
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PermissionlessPool.sol#L66-L75
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PoolSelector.sol#L147-L151
+
+##
+
+## [NC-11] No Same value input control
+
+https://github.com/code-423n4/2023-06-stader/blob/7566b5a35f32ebd55d3578b8bd05c038feb7d9cc/contracts/PoolSelector.sol#L140-L144
+
+##
+
+## [NC-12] Use Fuzzing Test for math code bases
+
+I recommend fuzzing testing in math code structures,
+
+Recommendation:
+Use should fuzzing test like Echidna.
+
+Fuzzing is not easy, the tools are rough, and the math is hard, but it is worth it. Fuzzing gives me a level of confidence in my smart contracts that I didn’t have before. Relying just on unit testing anymore and poking around in a testnet seems reckless now.
+
+https://medium.com/coinmonks/smart-contract-fuzzing-d9b88e0b0a05
+
+##
+
+## [NC-13] Project Upgrade and Stop Scenario should be
+
+At the start of the project, the system may need to be stopped or upgraded, I suggest you have a script beforehand and add it to the documentation. This can also be called an " EMERGENCY STOP (CIRCUIT BREAKER) PATTERN ".
+
+https://github.com/maxwoe/solidity_patterns/blob/master/security/EmergencyStop.sol
 
 
 
 
-update codes to avoid Compile Errors: 
-
-add a timelock to critical functions:
-
-Critical changes should use two-step procedure
-
-Tokens accidentally sent to the contract cannot be recovered
 
 
 
@@ -155,55 +419,10 @@ Tokens accidentally sent to the contract cannot be recovered
 
 
 
-[M‑01]	The owner is a single point of failure and a centralization risk	2
-[L‑01]	Division by zero not prevented	1
-[L‑02]	Initialization can be front-run	18
-[L‑03]	Missing checks for address(0x0) when assigning values to address state variables	41
-[L‑04]	Unsafe downcast	2
-[L‑05]	Loss of precision	7
-[L‑06]	Array lengths not checked	2
-[L‑07]	Upgradeable contract is missing a __gap[50] storage variable to allow for new storage variables in later versions	18
-[L‑08]	External calls in an un-bounded for-loop may result in a DOS	8
 
-[N‑01]	Events are missing sender information	70
-[N‑02]	Variables need not be initialized to zero	13
-[N‑03]	Consider using named mappings	41
-[N‑04]	Non-external/public variable and function names should begin with an underscore	78
-[N‑05]	Redundant inheritance specifier	15
-[N‑06]	Large numeric literals should use underscores for readability	6
-[N‑07]	Unused struct definition	2
-[N‑08]	Constants in comparisons should appear on the left side	55
-[N‑09]	Cast to bytes or bytes32 for clearer semantic meaning	2
-[N‑10]	Use bytes.concat() on bytes instead of abi.encodePacked() for clearer semantic meaning	4
-[N‑11]	Custom error has no error details	120
-[N‑12]	Events may be emitted out of order due to reentrancy	1
-[N‑13]	Imports could be organized more systematically	2
-[N‑14]	Unusual loop variable	1
-[N‑15]	Adding a return statement when the function defines a named return variable, is redundant	2
-[N‑16]	constants should be defined rather than using magic numbers	62
-[N‑17]	Event is not properly indexed	56
-[N‑18]	Vulnerable versions of packages are being used	1
-[N‑19]	Import declarations should import specific identifiers, rather than the whole file	199
-[N‑20]	Return values of approve() not checked	1
-[N‑21]	The nonReentrant modifier should occur before all other modifiers	2
-[N‑22]	Events that mark critical parameter changes should contain both the old and the new value	49
-[N‑23]	Use scientific notation (e.g. 1e18) rather than exponentiation (e.g. 10**18)	3
-[N‑24]	Constant redefined elsewhere	2
-[N‑25]	Use @inheritdoc rather than using a non-standard annotation	7
-[N‑26]	Inconsistent spacing in comments	77
-[N‑27]	Lines are too long	13
-[N‑28]	Variable names that consist of all capital letters should be reserved for constant/immutable variables	6
-[N‑29]	Non-library/interface files should use fixed compiler versions, not floating ones	1
-[N‑30]	Typos	5
-[N‑31]	File is missing NatSpec	25
-[N‑32]	NatSpec @param is missing	135
-[N‑33]	NatSpec @return argument is missing	85
-[N‑34]	Avoid the use of sensitive terms	5
-[N‑35]	Function ordering does not follow the Solidity style guide	36
-[N‑36]	Contract does not follow the Solidity style guide's suggested layout ordering	4
-[N‑37]	Strings should use double quotes rather than single quotes	1
-[N‑38]	Expressions for constant values such as a call to keccak256(), should use immutable rather than constant	51
-[N‑39]	Numeric values having to do with time should use time units for readability	9
-[N‑40]	Consider using delete rather than assigning zero/false to clear values	5
-[N‑41]	Contracts should have full test coverage	1
-[N‑42]	Large or complicated code bases should implement invariant tests	
+
+
+
+
+
+
