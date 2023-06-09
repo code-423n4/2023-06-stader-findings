@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "erictee",
+  "risk": "2",
+  "title": "CHAINLINK’S LATESTROUNDDATA MIGHT RETURN STALE OR INCORRECT RESULTS",
+  "issueId": 298,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/298"
+}
