@@ -62,55 +62,7 @@ File: contracts/PermissionedNodeRegistry.sol
 235:  remainingValidatorsToDeposit -= newSelectedCapacity;
 ```
 
-# [G-03]  Calldata array elements  should be cached in stack variables rather than re-reading them from calldata array
-Cache calldata elements into stack variables if using same elements multiple times it save gas.
-## PermissionedNodeRegistry.sol.addValidatorKeys() : inside loop for each  *i*  value _pubkey[i], _preDepositSignature[i], _depositSignature[i] should be cached to stack variables (saves 412 gas on each iteration)
-[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L156](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L156)
-``` solidity
-File : contracts/PermissionedNodeRegistry.sol 
-   156:   IPoolUtils(poolUtils).onlyValidKeys(_pubkey[i], _preDepositSignature[i], _depositSignature[i]);
-            address withdrawVault = IVaultFactory(vaultFactory).deployWithdrawVault(
-                POOL_ID,
-                operatorId,
-                operatorTotalKeys + i, //operator totalKeys
-                nextValidatorId
-            );
-            validatorRegistry[nextValidatorId] = Validator(
-                ValidatorStatus.INITIALIZED,
-                _pubkey[i],
-                _preDepositSignature[i],
-                _depositSignature[i],
-                withdrawVault,
-                operatorId,
-                0,
-                0
-            );
-            validatorIdByPubkey[_pubkey[i]] = nextValidatorId;
-            validatorIdsByOperatorId[operatorId].push(nextValidatorId);
-            emit AddedValidatorKey(msg.sender, _pubkey[i], nextValidatorId);
-```
-## PermissionedNodeRegistry.sol.markValidatorReadyToDeposit() : inside loop for each  *i*  value  _frontRunPubkey[i] should be cached to stack variables (saves 25 gas on each iteration)
-[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L273](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L273)
-```solidity
-272:   for (uint256 i; i < frontRunValidatorsLength; ) {
-273:           uint256 validatorId = validatorIdByPubkey[_frontRunPubkey[i]];
-          ...
-278:         emit ValidatorMarkedAsFrontRunned(_frontRunPubkey[i], validatorId); //@audit-gas _frontRunPubkey[i] can be cached 
-             ... }
-```
-## PermissionedNodeRegistry.sol.markValidatorReadyToDeposit() : inside loop for each  *i*  value  _invalidSignaturePubkey[i] should be cached to stack variables (saves 25 gas on each iteration)
-[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L273](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionedNodeRegistry.sol#L273)
-```solidity
-285:    for (uint256 i; i < invalidSignatureValidatorsLength; ) {
-286:       uint256 validatorId = validatorIdByPubkey[_invalidSignaturePubkey[i]];
-           ...
-
-291:       emit ValidatorStatusMarkedAsInvalidSignature(_invalidSignaturePubkey[i], validatorId);
-           ...
-        }
-```
-
-# [G-04]  State variables  should be cached in stack variables rather than re-reading them from storage.
+# [G-03]  State variables  should be cached in stack variables rather than re-reading them from storage.
 If reading of state variables is happening more than once inside function than it must be cached in stack variables so 100 Gas of Gwarmaccess can be save every time a state variables read after first time.
 
 ## PermissionedNodeRegistry.sol.addValidatorKeys() : state variable *nextValidatorId* should be cached into stack varaible insted of re-reding from storage 7 times (saves 600 Gas)
@@ -161,8 +113,75 @@ If reading of state variables is happening more than once inside function than i
 ```solidity
 241:         } while (i != operatorIdForExcessDeposit); //audit gas  cache it rather than re-reading same state variable
 ```
+## PermissionLessNodeRegistry.sol.onboardNodeOperator() : state variable *nextOperatorId* should be cached into stack varaible insted of re-reding from storage 2 times (saves 100 Gas of 2nd Gwarmaccess)
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L108](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L108)
+```solidity
+ 106:      address nodeELRewardVault = IVaultFactory(staderConfig.getVaultFactory()).deployNodeELRewardVault(
+            POOL_ID,
+ 108:          nextOperatorId
+              );
+ 110:      nodeELRewardVaultByOperatorId[nextOperatorId] = nodeELRewardVault;
+```
+## PermissionLessNodeRegistry.sol.getNodeELVaultAddressForOptOutOperators() : state variable *nextOperatorId* should be cached into stack varaible insted of re-reding from storage 2 times (saves 100 Gas of 2nd Gwarmaccess)
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L570](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L570)
+```solidity
+570:   endIndex = endIndex > nextOperatorId ? nextOperatorId : endIndex; // cache nextOperatorId
+```
+## PermissionLessNodeRegistry.sol.onboardOperator() : state variable *nextOperatorId* should be cached into stack varaible insted of re-reding from storage 5 times (saves 400 Gas of  Gwarmaccess)
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L570](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L570)
+```solidity
+603:    operatorStructById[nextOperatorId] = Operator(
+            true,
+            _optInForSocializingPool,
+            _operatorName,
+            _operatorRewardAddress,
+            msg.sender
+           );
+610:     operatorIDByAddress[msg.sender] = nextOperatorId;
+611:     socializingPoolStateChangeBlock[nextOperatorId] = block.number;
+612:     nextOperatorId++;
 
-# [G-05]  Make instance into stack variable instead of re-creating every time calling external contract function (save 30 gas each time )
+614:     emit OnboardedOperator(msg.sender, _operatorRewardAddress, nextOperatorId - 1, _optInForSocializingPool);
+```
+## PermissionLessNodeRegistry.sol.addValidatorKeys() : state variable *nextValidatorId* should be cached into stack varaible insted of re-reding from storage 6*n times (saves 600*n - 100 Gas of  Gwarmaccess,n is the for loop iterations ie. keyCount)
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L146](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L146)
+```solidity
+ 140:    for (uint256 i; i < keyCount; ) {
+            IPoolUtils(poolUtils).onlyValidKeys(_pubkey[i], _preDepositSignature[i], _depositSignature[i]);
+            address withdrawVault = IVaultFactory(vaultFactory).deployWithdrawVault(
+                POOL_ID,
+                operatorId,
+                operatorTotalKeys + i, //operator totalKeys
+ 146:            nextValidatorId //@audit-gas cache it
+            );
+             //@audit-gas cache nextValidatorId
+ 148:         validatorRegistry[nextValidatorId] = Validator(
+                ValidatorStatus.INITIALIZED,
+                _pubkey[i],
+                _preDepositSignature[i],
+                _depositSignature[i],
+                withdrawVault,
+                operatorId,
+                0,
+                0
+            );
+
+ 159:       validatorIdByPubkey[_pubkey[i]] = nextValidatorId;//@audit-gas cache  nextValidatorId
+ 160:       validatorIdsByOperatorId[operatorId].push(nextValidatorId);//@audit-gas cache nextValidatorId
+ 161:       emit AddedValidatorKey(msg.sender, _pubkey[i], nextValidatorId);//@audit-gas cache  nextValidatorId
+ 162:       nextValidatorId++; //@audit-gas cache  nextValidatorId and write in last
+            unchecked {
+                ++i;
+            }
+        }
+```
+## PermissionLessNodeRegistry.sol.getAllActiveValidators() : state variable *nextValidatorId* should be cached into stack varaible insted of re-reding from storage 2 times (saves  100 Gas of  Gwarmaccess )
+[https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L501](https://github.com/code-423n4/2023-06-stader/blob/main/contracts/PermissionlessNodeRegistry.sol#L501)
+```solidity
+501:    endIndex = endIndex > nextValidatorId ? nextValidatorId : endIndex; //@audit-gas cache  nextValidatorId
+```
+
+# [G-04]  Make instance into stack variable instead of re-creating every time calling external contract function (save 30 gas each time )
 
 In most files this pattern is not followed, this should be followed.
 
