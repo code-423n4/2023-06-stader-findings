@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "ladboy233",
+  "risk": "2",
+  "title": "The implementation of the withdrawal logic inside SDCollateral is missing the timelock mechanism",
+  "issueId": 396,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/396"
+}
