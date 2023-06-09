@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "sebghatullah",
+  "risk": "2",
+  "title": "### [M-02]  In the Auction contract and OperatorRewardsCollector the  initialize() functions, the DEFAULT_ADMIN_ROLE is granted to the_admin address without any specific role or validation condition. anyone who has access to the _admin address can become the contract's administrator and have full control over the contract.",
+  "issueId": 277,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/277"
+}
