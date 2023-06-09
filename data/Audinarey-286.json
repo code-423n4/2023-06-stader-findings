@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Audinarey",
+  "risk": "3",
+  "title": "MISSING ACCESS CONTROL AND MISSING LOGICAL CHECKS IN PENALTY.sol",
+  "issueId": 286,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/286"
+}
