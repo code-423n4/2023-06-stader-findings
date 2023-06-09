@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "Inspecktor",
+  "risk": "3",
+  "title": "When deploying a contract in PermissionlessNodeRegistry.deployNodeELRewardVault(), an attacker can find out in advance the address of the future deployed contract and deploy his own at this address",
+  "issueId": 370,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/370"
+}
