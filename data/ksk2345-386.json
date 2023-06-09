@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "ksk2345",
+  "risk": "3",
+  "title": "The admin address used in initialize function, can behave maliciously",
+  "issueId": 386,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/386"
+}
