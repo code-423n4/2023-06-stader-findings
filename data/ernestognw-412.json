@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "ernestognw",
+  "risk": "2",
+  "title": "Lack of max value for `_excessETHDepositCoolDown` in `StaderStakePoolsManager` cn be used to pause the contract indefinitely",
+  "issueId": 412,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/412"
+}
