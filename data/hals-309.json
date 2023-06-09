@@ -1,0 +1,8 @@
+{
+  "contest": 249,
+  "handle": "hals",
+  "risk": "2",
+  "title": "No Check on `_sdAmount` When Creating a Lot Results In Users Adding Bids On Lots With Zero SD Tokens & The Highest Bidder Losing His Ethers",
+  "issueId": 309,
+  "issueUrl": "https://github.com/code-423n4/2022-06-stader-findings/issues/309"
+}
